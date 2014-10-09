@@ -16,10 +16,10 @@ public class MainPage {
     @FindBy(xpath = "//div[@class='T-I J-J5-Ji T-I-KE L3']")
     private WebElement buttonSent;
 
-    @FindBy(xpath = "//form[@id=':e7']//textarea[@id=':g4']")
+    @FindBy(xpath = "//textarea[@class='vO']")
     private WebElement inputReceiver;
 
-    @FindBy(xpath = "//form[@id=':e7']//input[@id=':fp']")
+    @FindBy(xpath = "//input[@class='aoT']")
     private WebElement inputSubject;
 
     @FindBy(xpath = "//body[class='editable LW-avf']")
@@ -32,7 +32,7 @@ public class MainPage {
 
     public void sendMessage(String receiverLogin, String subject, String message) throws InterruptedException {
         buttonSent.click();
-        inputReceiver.sendKeys(receiverLogin);
+        inputReceiver.sendKeys("not working login");
         inputSubject.sendKeys(subject);
         driver.switchTo().frame(10);
         inputMessage.sendKeys(message);
