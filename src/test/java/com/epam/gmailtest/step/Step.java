@@ -13,12 +13,13 @@ import java.util.concurrent.TimeUnit;
  * Created by Kanstantsin_Makarau on 10/9/2014.
  */
 public class Step {
-    Logger logger = Logger.getLogger(Step.class);
+    public Logger logger = Logger.getLogger(Step.class);
     private WebDriver driver;
+    private MainPage mainPage;
 
     public void initBrowser() {
         driver = new FirefoxDriver();
-        driver.manage().timeouts().pageLoadTimeout(100, TimeUnit.SECONDS);
+        driver.manage().timeouts().pageLoadTimeout(1000, TimeUnit.SECONDS);
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         logger.info("Browser started");
     }
@@ -35,7 +36,17 @@ public class Step {
     }
 
     public void writeMessage(String receiverLogin) throws InterruptedException {
-        MainPage mainPage = new MainPage(driver);
-        mainPage.sendMessage(receiverLogin, Util.getRandomString(5), Util.getRandomString(20));
+        mainPage = new MainPage(driver);
+        mainPage.writeMessage(receiverLogin, Util.getRandomString(5), Util.getRandomString(20));
+    }
+
+    public void markMessageLikeSpam() {
+        mainPage = new MainPage(driver);
+        mainPage.markMessageLikeSpam();
+    }
+
+    public boolean checkNewMessageInSpamFolder() {
+        mainPage = new MainPage(driver);
+        return mainPage.checkSpamFolder();
     }
 }
