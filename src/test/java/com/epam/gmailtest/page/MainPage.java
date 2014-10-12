@@ -6,15 +6,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-
-import java.util.List;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * Created by Kanstantsin_Makarau on 10/9/2014.
  */
 public class MainPage {
     private WebDriver driver;
-    private String email;
     public Logger logger = Logger.getLogger(MainPage.class);
 
     @FindBy(xpath = "//div[@class='T-I J-J5-Ji T-I-KE L3']")
@@ -26,26 +25,24 @@ public class MainPage {
     @FindBy(xpath = "//input[@class='aoT']")
     private WebElement inputSubject;
 
-    @FindBy(xpath = "//body[@id=':aa']")
+    @FindBy(xpath = "//body[@class='editable LW-avf']")
     private WebElement inputMessage;
 
     @FindBy(xpath = "//div[@id=':8y']")
     private WebElement buttonSend;
 
-    @FindBy(xpath = "//tr[@id=':8f']")
-    private WebElement linkOpenLastMessageFromSpammer;
+    @FindBy(xpath = "//tr[@class='zA zE']")
+    private WebElement unreadMessage;
 
-    @FindBy(xpath = "//div[@class='T-I J-J5-Ji nN T-I-ax7 T-I-Js-Gs T-I-Js-IF ar7 T-I-Zf-aw2']")
+    //todo
+    @FindBy(xpath = "//div[@class='asa']")
     private WebElement buttonToSpam;
 
-    @FindBy(xpath = "//span[@class='J-Ke n4 ah9 aiu air']")
-    private WebElement buttonMore;
+    @FindBy(xpath = "//input[@id='gbqfq']")
+    private WebElement inputFind;
 
-    @FindBy(xpath = "//a[@class='J-Ke n0 aBU']")
-    private WebElement buttonSpamFolder;
-
-    @FindBy(xpath = "//tr[@class='oZ-x3 xY']")
-    private WebElement spamMessageTable;
+    @FindBy(xpath = "//button[@id='gbqfb']")
+    private WebElement buttonSearch;
 
     public MainPage(WebDriver driver) {
         this.driver = driver;
@@ -53,6 +50,7 @@ public class MainPage {
     }
 
     public void writeMessage(String receiverLogin, String subject, String message) throws InterruptedException {
+        logger.info("try to write message...");
         buttonWrite.click();
         inputReceiver.sendKeys(receiverLogin);
         inputSubject.sendKeys(subject);
@@ -60,21 +58,29 @@ public class MainPage {
         inputMessage.sendKeys(message);
         driver.switchTo().parentFrame();
         buttonSend.click();
+        logger.info("message written");
     }
 
     public void markMessageLikeSpam() {
-
-        linkOpenLastMessageFromSpammer.click();
+        logger.info("try to mark message like spam...");
+        new WebDriverWait(driver, 15).until(ExpectedConditions.visibilityOf(unreadMessage));
+        unreadMessage.click();
         buttonToSpam.click();
+        logger.info("massage marked");
     }
 
     public boolean checkSpamFolder() {
-        buttonMore.click();
-        buttonSpamFolder.click();
-        List<WebElement> spammerMessages = spamMessageTable.findElements(By.xpath("//span[@email='epamlab.user1@gmail.com']"));
-        if(spammerMessages.size() > 1){
+        logger.info("start checking spam folder...");
+        inputFind.sendKeys("in:spam");
+        buttonSearch.click();
+        try {
+            logger.info("Found message from spammer : " +
+                    unreadMessage.findElement(By.xpath("//span[@email='epamlab.user1@gmail.com']")));
             return true;
         }
-        return false;
+        catch(Exception e){
+            logger.error(e.getMessage());
+            return false;
+        }
     }
 }
