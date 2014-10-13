@@ -25,8 +25,9 @@ public class Step {
     }
 
     public void stopBrowser() {
+        mainPage = null;                    //нужно ли это здесь?
         driver.quit();
-        logger.info("Browser finished");
+        logger.info("Browser closed");
     }
 
     public void loginGmail(String login, String password) {
@@ -36,17 +37,31 @@ public class Step {
     }
 
     public void writeMessage(String receiverLogin) throws InterruptedException {
-        mainPage = new MainPage(driver);
+        getMainPage();
         mainPage.writeMessage(receiverLogin, Util.getRandomString(5), Util.getRandomString(20));
     }
 
     public void markMessageLikeSpam() {
-        mainPage = new MainPage(driver);
+        getMainPage();
         mainPage.markMessageLikeSpam();
     }
 
     public boolean checkNewMessageInSpamFolder() {
-        mainPage = new MainPage(driver);
+        getMainPage();
         return mainPage.checkSpamFolder();
+    }
+
+    public void deleteSpamMessages() {
+        getMainPage();
+        mainPage.deleteSpamMessages();
+    }
+
+    private MainPage getMainPage() {
+        if(null == mainPage){
+            return mainPage = new MainPage(driver);
+        }
+        else{
+            return mainPage;
+        }
     }
 }

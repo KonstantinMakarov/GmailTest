@@ -2,6 +2,7 @@ package com.epam.gmailtest.main;
 
 
 import com.epam.gmailtest.step.Step;
+import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -29,21 +30,22 @@ public class GmailAutomationTest {
         step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
         step.writeMessage(USER2_LOGIN);
         step.stopBrowser();
-        Thread.sleep(10000);
         step.initBrowser();
 
         step.loginGmail(USER2_LOGIN, USER2_PASSWORD);
         step.markMessageLikeSpam();
-//        step.stopBrowser();
-//        step.initBrowser();
-//
-//        step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
-//        step.writeMessage(USER2_LOGIN);
-//        step.stopBrowser();
-//        step.initBrowser();
-//
-//        step.loginGmail(USER2_LOGIN, USER2_PASSWORD);
-//        Assert.assertEquals(step.checkNewMessageInSpamFolder(), true);
+        step.stopBrowser();
+        step.initBrowser();
+
+        step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
+        step.writeMessage(USER2_LOGIN);
+        step.stopBrowser();
+        step.initBrowser();
+
+        step.loginGmail(USER2_LOGIN, USER2_PASSWORD);
+        boolean isWeHaveTwoSpamMessages = step.checkNewMessageInSpamFolder();
+        step.deleteSpamMessages();              //этого нет в сценари
+        Assert.assertEquals(isWeHaveTwoSpamMessages, true);
     }
 
     @AfterMethod(description = "Stop browser")
