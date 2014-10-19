@@ -26,26 +26,52 @@ public class GmailAutomationTest {
     }
 
     @Test
-    public void user1CanMarkMessageAsSpamAndThenMessagesFromUser2WillGoToFolderSpam() throws InterruptedException {
+    public void user1CanMarkMessageAsSpamAndThenMessagesFromUser2WillGoToFolderSpam() {
         step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
-        step.writeMessage(USER2_LOGIN);
+        step.writeRandomMessageTo(USER2_LOGIN);
         step.stopBrowser();
         step.initBrowser();
 
         step.loginGmail(USER2_LOGIN, USER2_PASSWORD);
-        step.markMessageLikeSpam();
+        step.markMessageLikeSpam(USER1_LOGIN);
         step.stopBrowser();
         step.initBrowser();
 
         step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
-        step.writeMessage(USER2_LOGIN);
+        step.writeRandomMessageTo(USER2_LOGIN);
         step.stopBrowser();
         step.initBrowser();
 
         step.loginGmail(USER2_LOGIN, USER2_PASSWORD);
-        boolean isWeHaveTwoSpamMessages = step.checkNewMessageInSpamFolder();
-        step.deleteSpamMessages();              //этого нет в сценари
-        Assert.assertEquals(isWeHaveTwoSpamMessages, true);
+        boolean twoMessagesInSpamFolder = step.doWeHaveTwoMessagesInSpamFolderFrom(USER1_LOGIN);
+        //step.deleteSpamMessages();              //этого нет в сценари
+        Assert.assertEquals(twoMessagesInSpamFolder, true);
+    }
+
+    @Test
+    public void forwardBetweenUsers(){
+//        step.loginGmail(USER2_LOGIN, USER2_PASSWORD);
+//        step.goToForwardPage();
+//        step.setForwardToUser3(USER3_LOGIN);
+//        step.stopBrowser();
+//
+//        step.initBrowser();
+//        step.loginGmail(USER3_LOGIN, USER3_PASSWORD);
+//        step.confirmForwardFromUser2("forwarding-noreply@google.com");
+//        step.stopBrowser();
+//
+//        step.initBrowser();
+        step.loginGmail(USER2_LOGIN, USER2_PASSWORD);
+        step.goToForwardPage();
+        step.chooseRadiobuttonForwardACopyOfIncomingMailTo();
+        step.chooseFiltersTab();
+        step.createANewFilterWithSettings(USER1_LOGIN); //todo универсальные settings
+        step.stopBrowser();
+
+        step.initBrowser();
+        step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
+        step.writeRandomMessageTo(USER2_LOGIN);
+
     }
 
     @AfterMethod(description = "Stop browser")

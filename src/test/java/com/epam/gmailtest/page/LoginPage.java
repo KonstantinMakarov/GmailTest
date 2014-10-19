@@ -11,7 +11,7 @@ import org.openqa.selenium.support.PageFactory;
  */
 public class LoginPage {
     WebDriver driver;
-    private final Logger logger = Logger.getLogger(LoginPage.class);
+    private static final Logger logger = Logger.getLogger(LoginPage.class);
 
     private  final String BASE_URL = "https://gmail.com";
     @FindBy(id = "Email")

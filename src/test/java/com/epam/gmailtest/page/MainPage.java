@@ -2,6 +2,7 @@ package com.epam.gmailtest.page;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -9,79 +10,266 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.List;
+
 /**
  * Created by Kanstantsin_Makarau on 10/9/2014.
  */
 public class MainPage {
     private WebDriver driver;
-    public Logger logger = Logger.getLogger(MainPage.class);
+    public static final Logger logger = Logger.getLogger(MainPage.class);
 
     @FindBy(xpath = "//div[@class='T-I J-J5-Ji T-I-KE L3']")
-    private WebElement buttonWrite;
+    private WebElement buttonCompose;
 
     @FindBy(xpath = "//textarea[@class='vO']")
-    private WebElement inputReceiver;
+    private WebElement inputMessageReceiver;
 
     @FindBy(xpath = "//input[@class='aoT']")
-    private WebElement inputSubject;
+    private WebElement inputMessageSubject;
 
     @FindBy(xpath = "//body[@class='editable LW-avf']")
-    private WebElement inputMessage;
+    private WebElement inputMessageText;
 
-    //todo english language
-    @FindBy(xpath = "//div[@id=':8y']")
+    @FindBy(xpath = "//div[@class='T-I J-J5-Ji aoO T-I-atl L3']")
     private WebElement buttonSend;
 
     @FindBy(xpath = "//tr[@class='zA zE']")
     private WebElement unreadMessage;
 
-    //todo correct xpath
-    @FindBy(xpath = "//div[@class='asa']")
+    @FindBy(xpath = "//tr[@class='zA yO']")
+    private WebElement readMessage;
+
+    @FindBy(css = "div.T-Jo-auh")
+    private WebElement checkBox;
+
+    @FindBy(css = "div.asl.T-I-J3.J-J5-Ji")
     private WebElement buttonToSpam;
 
-    @FindBy(xpath = "//input[@id='gbqfq']")
-    private WebElement inputFind;
+    @FindBy(xpath = "//div[text()='Delete forever/..'")
+    private WebElement buttonDelete;
 
-    @FindBy(xpath = "//button[@id='gbqfb']")
+    @FindBy(xpath = "//input[@class='gbqfif']")
+    private WebElement inputSearch;
+
+    @FindBy(xpath = "//button[@class='gbqfb']")
     private WebElement buttonSearch;
+
+    @FindBy(xpath = "//div[@class='T-I J-J5-Ji ash T-I-ax7 L3']")
+    private WebElement buttonSettings;
+
+    @FindBy(xpath = "//div[@class='J-N aMS']")
+    private WebElement buttonSettingsInner;
+
+    @FindBy(xpath = "//a[text()='Forwarding and POP/IMAP']")
+    private WebElement buttonForwardingAndPOP_IMAP;
+
+    @FindBy(xpath = "//input[@value='Add a forwarding address']")
+    private WebElement buttonAddAForwardingAddress;
+
+    @FindBy(xpath = "//div[@class='Kj-JD-Jz' and contains(text(), 'a new forwarding email')]//input[@id]")
+    private WebElement inputForwardLogin;
+
+    @FindBy(xpath = "//button[@class='J-at1-auR']")
+    private WebElement buttonNextInAddForwardingAddress;
+
+    @FindBy(xpath = "//input[@value='Proceed']")
+    private WebElement buttonProceedInAddForwardingAddress;
+
+    @FindBy(xpath = "//button[@class='J-at1-auR']")
+    private WebElement buttonOKInAddForwardingAddress;
+
+    @FindBy(xpath = "(//a[contains(text(), 'isolated')])[1]")
+    private WebElement linkToAcceptForward;
+
+    @FindBy(xpath = "//span[text()='Forward a copy of incoming mail to ']/../..//input")
+    private WebElement radiobuttonForwardACopyOfIncomingMailTo;
+
+    @FindBy(xpath = "//a[@class='f0 ou' and text()='Filters']")
+    private WebElement buttonFilters;
+
+    @FindBy(xpath = "//span[@class='sA' and text()='Create a new filter']")
+    private WebElement buttonCreateANewFilter;
+
+    @FindBy(xpath = "//input[@class='ZH nr aQa']")
+    private WebElement inputFilterFrom;
+
+    @FindBy(xpath = "//label[text()='Has attachment']/../input")
+    private WebElement checkBoxFilterHasAttachment;
+
+    @FindBy(xpath = "//div[@class='acM']")
+    private WebElement buttonCreateFilterWithThisSearch;
+
+    @FindBy(xpath = "//label[text()='Delete it']/../input")
+    private WebElement checkBoxFilterDeleteIt;
+
+    @FindBy(xpath = "//label[text()='Always mark it as important']/../input")
+    private WebElement checkBoxFilterAlwaysMarkItAsImportant;
+
+    @FindBy(xpath = "//div[@class='T-I J-J5-Ji Zx acL T-I-atl L3']")
+    private WebElement buttonCreateFilter;
+
+    @FindBy(xpath = "//button[@class='J-at1-auR J-at1-atl' and @name='ok']")
+    private WebElement buttonOkInConfirmDiscardChanges;
 
     public MainPage(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
     }
 
-    public void writeMessage(String receiverLogin, String subject, String message) throws InterruptedException {
-        logger.info("try to write message...");
-        buttonWrite.click();
-        inputReceiver.sendKeys(receiverLogin);
-        inputSubject.sendKeys(subject);
-        driver.switchTo().frame(10);
-        inputMessage.sendKeys(message);
-        driver.switchTo().parentFrame();
-        buttonSend.click();
-        logger.info("message written");
-    }
-
-    public void markMessageLikeSpam() {
-        logger.info("try to mark message like spam...");
-        new WebDriverWait(driver, 15).until(ExpectedConditions.visibilityOf(unreadMessage));
-        unreadMessage.click();
-        buttonToSpam.click();
-        logger.info("massage marked");
-    }
-
-    public boolean checkSpamFolder() {
-        logger.info("start checking spam folder...");
-        inputFind.sendKeys("in:spam");
-        buttonSearch.click();
-        try {
-            logger.info("Found message from spammer : " +
-                    unreadMessage.findElement(By.xpath("//span[@email='epamlab.user1@gmail.com']")));
-            return true;
+    public void deleteSpamMessages() {
+        //todo почистить за собой
+        logger.info("try to delete messages from our spammer...");
+        List<WebElement> readMessages = readMessage.findElements(By.xpath("//span[@email='epamlab.user1@gmail.com']"));
+        for(WebElement currentMessage : readMessages){
+            currentMessage.findElement(By.xpath("/../..//td[@class='oZ-x3 xY']")).click();      //Spam checkbox !НЕ РАБОТАЕТ!
         }
-        catch(Exception e){
-            logger.error(e.getMessage());
-            return false;
+        buttonDelete.click();
+        logger.info("Spam messages from our spammer was deleted");
+    }
+
+    public void clickButtonCompose() {
+        logger.info("try to click button Compose...");
+        buttonCompose.click();
+        logger.info("button compose is clicked");
+    }
+
+    public void fillReceiver(String receiverLogin) {
+        logger.info("try to fill receiver field...");
+        inputMessageReceiver.sendKeys(receiverLogin);
+        logger.info("receiver field is filled");
+    }
+
+    public void fillSubject(String subject) {
+        logger.info("try to fill subject field...");
+        inputMessageSubject.sendKeys(subject);
+        logger.info("subject field is filled");
+    }
+
+    public void fillMessage(String message) {
+        logger.info("try to fill message field...");
+        driver.switchTo().frame(10);
+        inputMessageText.sendKeys(message);
+        driver.switchTo().parentFrame();
+        logger.info("message field is filled");
+    }
+
+    public void clickButtonSend() {
+        logger.info("try to click button Send...");
+        buttonSend.click();
+        logger.info("button send is clicked");
+    }
+
+    public void tickMessagesFromSpammer(String email) {
+        StringBuilder xpathEmail = new StringBuilder();
+        xpathEmail.append("//span[@email='").append(email).append("']");
+
+        logger.info("try to tick message...");
+        WebElement neededMessage = unreadMessage.findElement(By.xpath(xpathEmail.toString()));
+        new WebDriverWait(driver, 120).until(ExpectedConditions.visibilityOf(neededMessage));
+        neededMessage.findElement(By.xpath("/../../..//div[@class='T-Jo-auh']")).click();  //Inbox checkbox
+        logger.info("message is ticked");
+    }
+
+    public void clickButtonToSpam() {
+        logger.info("try to click button ToSpam...");
+        buttonToSpam.click();
+        logger.info("button ToSpam is clicked");
+    }
+
+    public void goToSpamFolder() {
+        logger.info("try to GoToSpamFolder...");
+        inputSearch.sendKeys("in:spam");
+        buttonSearch.click();
+        logger.info("in SpamFolder");
+    }
+
+    public List<WebElement> getUnreadMessagesFromUser(String email) {
+        StringBuilder xpathEmail = new StringBuilder();
+        xpathEmail.append("//span[@email='").append(email).append("']/../..");
+
+        logger.info("try to find messages from user...");
+        List<WebElement> unreadMessages = unreadMessage.findElements(By.xpath(xpathEmail.toString()));
+        logger.info("found: " + unreadMessages.size() + " messages");
+
+        return unreadMessages;
+    }
+
+    public void clickButtonSettings() {
+        buttonSettings.click();
+    }
+
+    public void chooseSettingsInContextMenu() {
+
+        new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOf(buttonSettingsInner));
+        buttonSettingsInner.click();
+    }
+
+    public void chooseForwardingAndPOP_IMAP() {
+        new WebDriverWait(driver, 120).until(ExpectedConditions.visibilityOf(buttonForwardingAndPOP_IMAP));
+        buttonForwardingAndPOP_IMAP.click();
+    }
+
+    public void clickButtonAddAForwardingAddress() {
+        buttonAddAForwardingAddress.click();
+    }
+
+    public void addForwardLogin(String email) {
+        inputForwardLogin.sendKeys(email);
+        buttonNextInAddForwardingAddress.click();
+        driver.switchTo().frame(driver.findElement(By.xpath("//iframe[@class='ds']")));
+        buttonProceedInAddForwardingAddress.click();
+        driver.switchTo().defaultContent();
+        buttonOKInAddForwardingAddress.click();
+    }
+
+    public void clickForwardAcceptLink() {
+        linkToAcceptForward.click();
+    }
+
+    public void clickRadiobuttonForwardACopyOfIncomingMailTo() {
+        radiobuttonForwardACopyOfIncomingMailTo.click();
+    }
+
+    public void clickButtonFilters() {
+        buttonFilters.click();
+    }
+
+    public void clickButtonCreateANewFilter() {
+        buttonCreateANewFilter.click();
+    }
+
+    public void fillFiledFrom(String fromUser) {
+        inputFilterFrom.sendKeys(fromUser);
+    }
+
+    public void tickHasAttachment() {
+        checkBoxFilterHasAttachment.click();
+    }
+
+    public void clickButtonCreateFilterWithThisSearch() {
+        buttonCreateFilterWithThisSearch.click();
+    }
+
+    public void tickDeleteIt() {
+        checkBoxFilterDeleteIt.click();
+    }
+
+    public void tickAlwaysMarkItAsImportant() {
+        checkBoxFilterAlwaysMarkItAsImportant.click();
+    }
+
+    public void clickButtonCreateFilter() {
+        buttonCreateFilter.click();
+    }
+
+    public void clickButtonOkInConfirmDiscardChanges() {
+        try{
+            new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOf(buttonOkInConfirmDiscardChanges));
+            buttonOkInConfirmDiscardChanges.click();
+        }
+        catch(NoSuchElementException e){
+            logger.info("Confirm discard changes is invisible. Try to go on...");
         }
     }
 }
