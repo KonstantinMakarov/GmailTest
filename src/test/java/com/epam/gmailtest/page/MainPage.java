@@ -28,7 +28,7 @@ public class MainPage {
     @FindBy(xpath = "//input[@class='aoT']")
     private WebElement inputMessageSubject;
 
-    @FindBy(xpath = "//body[@class='editable LW-avf']")
+    @FindBy(xpath = "//div[@class='Am Al editable LW-avf']")
     private WebElement inputMessageText;
 
     @FindBy(xpath = "//div[@class='T-I J-J5-Ji aoO T-I-atl L3']")
@@ -148,9 +148,9 @@ public class MainPage {
 
     public void fillMessage(String message) {
         logger.info("try to fill message field...");
-        driver.switchTo().frame(10);
+
         inputMessageText.sendKeys(message);
-        driver.switchTo().parentFrame();
+
         logger.info("message field is filled");
     }
 
@@ -160,14 +160,11 @@ public class MainPage {
         logger.info("button send is clicked");
     }
 
-    public void tickMessagesFromSpammer(String email) {
-        StringBuilder xpathEmail = new StringBuilder();
-        xpathEmail.append("//span[@email='").append(email).append("']");
+    public void tickMessageFromSpammer(WebElement message) {
 
         logger.info("try to tick message...");
-        WebElement neededMessage = unreadMessage.findElement(By.xpath(xpathEmail.toString()));
-        new WebDriverWait(driver, 120).until(ExpectedConditions.visibilityOf(neededMessage));
-        neededMessage.findElement(By.xpath("/../../..//div[@class='T-Jo-auh']")).click();  //Inbox checkbox
+
+        message.findElement(By.xpath("(//div[@class='T-Jo-auh'])[1]")).click();  //Inbox checkbox
         logger.info("message is ticked");
     }
 
@@ -189,6 +186,7 @@ public class MainPage {
         xpathEmail.append("//span[@email='").append(email).append("']/../..");
 
         logger.info("try to find messages from user...");
+        new WebDriverWait(driver, 120).until(ExpectedConditions.visibilityOf(unreadMessage.findElement(By.xpath(xpathEmail.toString()))));
         List<WebElement> unreadMessages = unreadMessage.findElements(By.xpath(xpathEmail.toString()));
         logger.info("found: " + unreadMessages.size() + " messages");
 
@@ -271,5 +269,9 @@ public class MainPage {
         catch(NoSuchElementException e){
             logger.info("Confirm discard changes is invisible. Try to go on...");
         }
+    }
+
+    public void attachFile(String filePath) {
+        logger.info(filePath);
     }
 }

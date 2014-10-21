@@ -66,7 +66,8 @@ public class Step {
     public void markMessageLikeSpam(String email) {
         logger.info("try to mark message like spam...");
         getMainPage();
-        mainPage.tickMessagesFromSpammer(email);
+        WebElement spamMessage = mainPage.getUnreadMessagesFromUser(email).get(0);
+        mainPage.tickMessageFromSpammer(spamMessage);
         mainPage.clickButtonToSpam();
         logger.info("message was marked");
     }
@@ -76,10 +77,7 @@ public class Step {
         getMainPage();
         mainPage.goToSpamFolder();
         List<WebElement> spammerMessages = mainPage.getUnreadMessagesFromUser(email);
-        if(spammerMessages.size() == 2){
-            return true;
-        }
-        else return false;
+        return spammerMessages.size() == 2;
     }
 
 //    public void deleteSpamMessages() {
@@ -136,5 +134,16 @@ public class Step {
         mainPage.tickDeleteIt();
         mainPage.tickAlwaysMarkItAsImportant();
         mainPage.clickButtonCreateFilter();
+    }
+
+    public void writeRandomMessageWithAttachTo(String email) {
+        logger.info("try to write message...");
+        getMainPage();
+
+        mainPage.clickButtonCompose();
+        mainPage.fillReceiver(email);
+        mainPage.fillSubject(Util.getRandomString(5));
+        mainPage.fillMessage(Util.getRandomString(20));
+        mainPage.attachFile(Util.getFile(1048576));
     }
 }

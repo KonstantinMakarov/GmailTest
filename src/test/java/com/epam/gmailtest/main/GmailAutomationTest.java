@@ -2,7 +2,6 @@ package com.epam.gmailtest.main;
 
 
 import com.epam.gmailtest.step.Step;
-import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -25,42 +24,42 @@ public class GmailAutomationTest {
         step.initBrowser();
     }
 
-    @Test
-    public void user1CanMarkMessageAsSpamAndThenMessagesFromUser2WillGoToFolderSpam() {
-        step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
-        step.writeRandomMessageTo(USER2_LOGIN);
-        step.stopBrowser();
-        step.initBrowser();
-
-        step.loginGmail(USER2_LOGIN, USER2_PASSWORD);
-        step.markMessageLikeSpam(USER1_LOGIN);
-        step.stopBrowser();
-        step.initBrowser();
-
-        step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
-        step.writeRandomMessageTo(USER2_LOGIN);
-        step.stopBrowser();
-        step.initBrowser();
-
-        step.loginGmail(USER2_LOGIN, USER2_PASSWORD);
-        boolean twoMessagesInSpamFolder = step.doWeHaveTwoMessagesInSpamFolderFrom(USER1_LOGIN);
-        //step.deleteSpamMessages();              //этого нет в сценари
-        Assert.assertEquals(twoMessagesInSpamFolder, true);
-    }
+//    @Test
+//    public void user1CanMarkMessageAsSpamAndThenMessagesFromUser2WillGoToFolderSpam() {
+//        step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
+//        step.writeRandomMessageTo(USER2_LOGIN);
+//        step.stopBrowser();
+//        step.initBrowser();
+//
+//        step.loginGmail(USER2_LOGIN, USER2_PASSWORD);
+//        step.markMessageLikeSpam(USER1_LOGIN);
+//        step.stopBrowser();
+//        step.initBrowser();
+//
+//        step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
+//        step.writeRandomMessageTo(USER2_LOGIN);
+//        step.stopBrowser();
+//        step.initBrowser();
+//
+//        step.loginGmail(USER2_LOGIN, USER2_PASSWORD);
+//        boolean twoMessagesInSpamFolder = step.doWeHaveTwoMessagesInSpamFolderFrom(USER1_LOGIN);
+//        //step.deleteSpamMessages();              //этого нет в сценари
+//        Assert.assertEquals(twoMessagesInSpamFolder, true);
+//    }
 
     @Test
     public void forwardBetweenUsers(){
-//        step.loginGmail(USER2_LOGIN, USER2_PASSWORD);
-//        step.goToForwardPage();
-//        step.setForwardToUser3(USER3_LOGIN);
-//        step.stopBrowser();
-//
-//        step.initBrowser();
-//        step.loginGmail(USER3_LOGIN, USER3_PASSWORD);
-//        step.confirmForwardFromUser2("forwarding-noreply@google.com");
-//        step.stopBrowser();
-//
-//        step.initBrowser();
+        step.loginGmail(USER2_LOGIN, USER2_PASSWORD);
+        step.goToForwardPage();
+        step.setForwardToUser3(USER3_LOGIN);
+        step.stopBrowser();
+
+        step.initBrowser();
+        step.loginGmail(USER3_LOGIN, USER3_PASSWORD);
+        step.confirmForwardFromUser2("forwarding-noreply@google.com");
+        step.stopBrowser();
+
+        step.initBrowser();
         step.loginGmail(USER2_LOGIN, USER2_PASSWORD);
         step.goToForwardPage();
         step.chooseRadiobuttonForwardACopyOfIncomingMailTo();
@@ -70,8 +69,8 @@ public class GmailAutomationTest {
 
         step.initBrowser();
         step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
+        step.writeRandomMessageWithAttachTo(USER2_LOGIN);
         step.writeRandomMessageTo(USER2_LOGIN);
-
     }
 
     @AfterMethod(description = "Stop browser")
