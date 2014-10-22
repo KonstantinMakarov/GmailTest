@@ -1,5 +1,7 @@
 package com.epam.gmailtest.util;
 
+import org.apache.log4j.Logger;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -10,6 +12,7 @@ import java.util.Random;
  * Created by Kanstantsin_Makarau on 10/9/2014.
  */
 public class Util {
+    static Logger logger = Logger.getLogger(Util.class);
     private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static Random rnd = new Random();
 
@@ -35,12 +38,10 @@ public class Util {
             while (file.length() < fileSize){
                 bufferedWriter.write("01234567890123456789");
             }
-            System.out.println(file.length());
+            logger.info("File was created with size = " + file.length());
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("File exception!!!");
         }
-
-
         return file.getAbsolutePath();
     }
 }

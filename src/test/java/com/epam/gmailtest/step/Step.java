@@ -43,18 +43,9 @@ public class Step {
         loginPage.login(login, password);
     }
 
-    private MainPage getMainPage() {
-        if(null == mainPage){
-            return mainPage = new MainPage(driver);
-        }
-        else{
-            return mainPage;
-        }
-    }
-
     public void writeRandomMessageTo(String receiverLogin) {
         logger.info("try to write message...");
-        getMainPage();
+        MainPage.getInstance(driver);
         mainPage.clickButtonCompose();
         mainPage.fillReceiver(receiverLogin);
         mainPage.fillSubject(Util.getRandomString(5));
@@ -65,7 +56,7 @@ public class Step {
 
     public void markMessageLikeSpam(String email) {
         logger.info("try to mark message like spam...");
-        getMainPage();
+        MainPage.getInstance(driver);
         WebElement spamMessage = mainPage.getUnreadMessagesFromUser(email).get(0);
         mainPage.tickMessageFromSpammer(spamMessage);
         mainPage.clickButtonToSpam();
@@ -74,7 +65,7 @@ public class Step {
 
     public boolean doWeHaveTwoMessagesInSpamFolderFrom(String email) {
         logger.info("start checking spam folder...");
-        getMainPage();
+        MainPage.getInstance(driver);
         mainPage.goToSpamFolder();
         List<WebElement> spammerMessages = mainPage.getUnreadMessagesFromUser(email);
         return spammerMessages.size() == 2;
@@ -88,20 +79,20 @@ public class Step {
     //----------------Task2--------------
 
     public void goToForwardPage() {
-        getMainPage();
+        MainPage.getInstance(driver);
         mainPage.clickButtonSettings();
         mainPage.chooseSettingsInContextMenu();
         mainPage.chooseForwardingAndPOP_IMAP();
     }
 
     public void setForwardToUser3(String email) {
-        getMainPage();
+        MainPage.getInstance(driver);
         mainPage.clickButtonAddAForwardingAddress();
         mainPage.addForwardLogin(email);
     }
 
     public void confirmForwardFromUser2(String email) {
-        getMainPage();
+        MainPage.getInstance(driver);
         List<WebElement> messages = mainPage.getUnreadMessagesFromUser(email);
         messages.get(0).click();
         mainPage.clickForwardAcceptLink();
@@ -138,7 +129,7 @@ public class Step {
 
     public void writeRandomMessageWithAttachTo(String email) {
         logger.info("try to write message...");
-        getMainPage();
+        MainPage.getInstance(driver);
 
         mainPage.clickButtonCompose();
         mainPage.fillReceiver(email);

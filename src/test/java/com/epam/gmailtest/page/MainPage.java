@@ -16,8 +16,18 @@ import java.util.List;
  * Created by Kanstantsin_Makarau on 10/9/2014.
  */
 public class MainPage {
+    private static MainPage mainPage = null;
     private WebDriver driver;
     public static final Logger logger = Logger.getLogger(MainPage.class);
+
+    public static MainPage getInstance(WebDriver driver){
+        if(null == mainPage){
+            return mainPage = new MainPage(driver);
+        }
+        else{
+            return mainPage;
+        }
+    }
 
     @FindBy(xpath = "//div[@class='T-I J-J5-Ji T-I-KE L3']")
     private WebElement buttonCompose;
@@ -112,7 +122,10 @@ public class MainPage {
     @FindBy(xpath = "//button[@class='J-at1-auR J-at1-atl' and @name='ok']")
     private WebElement buttonOkInConfirmDiscardChanges;
 
-    public MainPage(WebDriver driver) {
+    @FindBy(xpath = "//div[@class='a1 aaA aMZ']")
+    private WebElement buttonAttachFiles;
+
+    private MainPage(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
     }
@@ -272,6 +285,8 @@ public class MainPage {
     }
 
     public void attachFile(String filePath) {
-        logger.info(filePath);
+        logger.info("" + filePath);
+        buttonAttachFiles.click();
+
     }
 }
