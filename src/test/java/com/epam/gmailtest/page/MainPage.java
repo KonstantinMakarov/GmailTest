@@ -10,24 +10,18 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 /**
  * Created by Kanstantsin_Makarau on 10/9/2014.
  */
 public class MainPage {
-    private static MainPage mainPage = null;
     private WebDriver driver;
     public static final Logger logger = Logger.getLogger(MainPage.class);
 
-    public static MainPage getInstance(WebDriver driver){
-        if(null == mainPage){
-            return mainPage = new MainPage(driver);
-        }
-        else{
-            return mainPage;
-        }
-    }
 
     @FindBy(xpath = "//div[@class='T-I J-J5-Ji T-I-KE L3']")
     private WebElement buttonCompose;
@@ -125,7 +119,7 @@ public class MainPage {
     @FindBy(xpath = "//div[@class='a1 aaA aMZ']")
     private WebElement buttonAttachFiles;
 
-    private MainPage(WebDriver driver) {
+    public MainPage(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
     }
@@ -287,6 +281,22 @@ public class MainPage {
     public void attachFile(String filePath) {
         logger.info("" + filePath);
         buttonAttachFiles.click();
-
+        StringSelection stringSelection = new StringSelection(filePath);
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
+        Robot robot = null;
+        try {
+            robot = new Robot();
+            robot.delay(3000);
+            robot.keyPress(KeyEvent.VK_CONTROL);
+            robot.keyPress(KeyEvent.VK_V);
+            robot.keyRelease(KeyEvent.VK_V);
+            robot.keyRelease(KeyEvent.VK_CONTROL);
+            robot.keyPress(KeyEvent.VK_ENTER);
+            robot.keyRelease(KeyEvent.VK_ENTER);
+            robot.delay(1000);
+        } catch (AWTException e) {
+            logger.error("JavaRobot problems");
+        }
+        new WebDriverWait(driver, 10).until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[@class='dQ']")));
     }
 }

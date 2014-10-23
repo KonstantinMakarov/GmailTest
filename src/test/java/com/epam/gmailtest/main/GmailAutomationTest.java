@@ -70,7 +70,7 @@ public class GmailAutomationTest {
 //        step.initBrowser();
         step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
         step.writeRandomMessageWithAttachTo(USER2_LOGIN);
-//        step.writeRandomMessageTo(USER2_LOGIN);
+        step.writeRandomMessageTo(USER2_LOGIN);
     }
 
     @AfterMethod(description = "Stop browser")
