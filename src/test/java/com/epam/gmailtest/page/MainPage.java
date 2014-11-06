@@ -1,10 +1,7 @@
 package com.epam.gmailtest.page;
 
 import org.apache.log4j.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -14,6 +11,7 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.util.List;
+
 
 /**
  * Created by Kanstantsin_Makarau on 10/9/2014.
@@ -38,7 +36,7 @@ public class MainPage {
     @FindBy(xpath = "//div[@class='T-I J-J5-Ji aoO T-I-atl L3']")
     private WebElement buttonSend;
 
-    @FindBy(xpath = "//tr[@class='zA zE']")
+    @FindBy(xpath = "//div[@role='main']//tr[@class='zA zE']")
     private WebElement unreadMessage;
 
     @FindBy(xpath = "//tr[@class='zA yO']")
@@ -89,7 +87,13 @@ public class MainPage {
     @FindBy(xpath = "//span[text()='Forward a copy of incoming mail to ']/../..//input")
     private WebElement radiobuttonForwardACopyOfIncomingMailTo;
 
-    @FindBy(xpath = "//a[@class='f0 ou' and text()='Filters']")
+    @FindBy(xpath = "//div[@class='nH Tv1JD']//button[@guidedhelpid='save_changes_button']")
+    private WebElement buttonSaveChanges;
+
+    @FindBy(xpath = "//div[contains(text(), 'You are forwarding')]")
+    private WebElement noticeYouAreForwardingYourEMail;
+
+    @FindBy(xpath = "//a[text()='Filters']")
     private WebElement buttonFilters;
 
     @FindBy(xpath = "//span[@class='sA' and text()='Create a new filter']")
@@ -119,6 +123,58 @@ public class MainPage {
     @FindBy(xpath = "//div[@class='a1 aaA aMZ']")
     private WebElement buttonAttachFiles;
 
+    @FindBy(xpath = "//a[@href='https://mail.google.com/mail/u/0/#inbox']")
+    private WebElement buttonInbox;
+
+    @FindBy(xpath = "//span[@class='Kj-JD-K7-K0']")
+    private WebElement errorAttachAlert;
+
+    @FindBy(xpath = "//div[@class='J-N-Jz' and text()='Themes'] ")
+    private WebElement themesInContextMenu;
+
+    @FindBy(xpath = "//a[text()='Themes']")
+    private WebElement themesInSettings;
+
+    @FindBy(xpath = "//div[@class='J-awr'] and text()='Display density'")
+    private WebElement downDropList;
+
+    @FindBy(xpath = "//div[@class='fZ']/a[text()='General']")
+    private WebElement generalFormSettingsVisible;
+
+    @FindBy(xpath = "//span[text()='Beach']")
+    private WebElement beachTheme;
+
+    @FindBy(xpath = "//img[@class='ao0' and contains(@src, 'themes/beach2/bg_thu2')]")
+    private WebElement beachBackGround;
+
+    @FindBy(xpath = "//div[@command='+emoticon']")
+    private WebElement buttonEmoticon;
+
+    @FindBy(xpath = "(//div[@goomoji='338'])[1]")
+    private WebElement smileYellowLaughInCompose;
+
+    @FindBy(xpath = "(//img[@goomoji='338'])[1]")
+    private WebElement smileYellowLaughInMessage;
+
+    @FindBy(xpath = "(//div[@goomoji='333'])[1]")
+    private WebElement smilePinkLaughInCompose;
+
+    @FindBy(xpath = "(//img[@goomoji='333'])[1]")
+    private WebElement smilePinkLaughInMessage;
+
+    @FindBy(xpath = "//div[@class='T-I J-J5-Ji T-I-atl L3' and text()='Insert']")
+    private WebElement buttonInsert;
+
+    private final String labelImportant = "(//div[@class='pH'])[1]";
+
+    private final String label_Not_Important = "(//div[@class='pH-A7'])[1]";
+
+    private final String labelHasAttach = "(//img[@alt='Attachment'])[1]";
+
+    private Robot robot = null;
+
+
+
     public MainPage(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
@@ -137,12 +193,14 @@ public class MainPage {
 
     public void clickButtonCompose() {
         logger.info("try to click button Compose...");
+        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(buttonCompose));
         buttonCompose.click();
         logger.info("button compose is clicked");
     }
 
     public void fillReceiver(String receiverLogin) {
         logger.info("try to fill receiver field...");
+        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(inputMessageReceiver));
         inputMessageReceiver.sendKeys(receiverLogin);
         logger.info("receiver field is filled");
     }
@@ -190,10 +248,10 @@ public class MainPage {
 
     public List<WebElement> getUnreadMessagesFromUser(String email) {
         StringBuilder xpathEmail = new StringBuilder();
-        xpathEmail.append("//span[@email='").append(email).append("']/../..");
+        xpathEmail.append("//span[@email='").append(email).append("']/../../..");
 
         logger.info("try to find messages from user...");
-        new WebDriverWait(driver, 120).until(ExpectedConditions.visibilityOf(unreadMessage.findElement(By.xpath(xpathEmail.toString()))));
+        new WebDriverWait(driver, 15).until(ExpectedConditions.visibilityOf(unreadMessage.findElement(By.xpath(xpathEmail.toString()))));
         List<WebElement> unreadMessages = unreadMessage.findElements(By.xpath(xpathEmail.toString()));
         logger.info("found: " + unreadMessages.size() + " messages");
 
@@ -201,6 +259,7 @@ public class MainPage {
     }
 
     public void clickButtonSettings() {
+        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(buttonSettings));
         buttonSettings.click();
     }
 
@@ -211,7 +270,7 @@ public class MainPage {
     }
 
     public void chooseForwardingAndPOP_IMAP() {
-        new WebDriverWait(driver, 120).until(ExpectedConditions.visibilityOf(buttonForwardingAndPOP_IMAP));
+        new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOf(buttonForwardingAndPOP_IMAP));
         buttonForwardingAndPOP_IMAP.click();
     }
 
@@ -234,6 +293,11 @@ public class MainPage {
 
     public void clickRadiobuttonForwardACopyOfIncomingMailTo() {
         radiobuttonForwardACopyOfIncomingMailTo.click();
+    }
+
+    public void clickButtonSaveChanges() {
+        buttonSaveChanges.click();
+        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(noticeYouAreForwardingYourEMail));
     }
 
     public void clickButtonFilters() {
@@ -273,17 +337,19 @@ public class MainPage {
             new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOf(buttonOkInConfirmDiscardChanges));
             buttonOkInConfirmDiscardChanges.click();
         }
+        catch(TimeoutException e){
+            logger.info("Confirm discard changes is invisible. Try to go on...");
+        }
         catch(NoSuchElementException e){
             logger.info("Confirm discard changes is invisible. Try to go on...");
         }
     }
 
     public void attachFile(String filePath) {
-        logger.info("" + filePath);
+        logger.info(filePath);
         buttonAttachFiles.click();
         StringSelection stringSelection = new StringSelection(filePath);
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
-        Robot robot = null;
         try {
             robot = new Robot();
             robot.delay(3000);
@@ -291,12 +357,150 @@ public class MainPage {
             robot.keyPress(KeyEvent.VK_V);
             robot.keyRelease(KeyEvent.VK_V);
             robot.keyRelease(KeyEvent.VK_CONTROL);
+
             robot.keyPress(KeyEvent.VK_ENTER);
             robot.keyRelease(KeyEvent.VK_ENTER);
-            robot.delay(1000);
+            robot.delay(3000);
         } catch (AWTException e) {
             logger.error("JavaRobot problems");
         }
+    }
+
+    public void goToBin() {
+        inputSearch.sendKeys("in:trash ");
+
+        buttonSearch.click();
+    }
+
+    public boolean isMessageMarkAsImportant(WebElement message) {
+        try {
+            new WebDriverWait(driver, 5
+            ).until(ExpectedConditions.visibilityOf(message.findElement(By.xpath(labelImportant))));
+        }
+        catch (TimeoutException e){
+            return false;
+        }
+        catch(NoSuchElementException e){
+            return false;
+        }
+        return true;
+    }
+
+    public void goToInbox() {
+        buttonInbox.click();
+    }
+
+    public boolean isMessageMarkAs_Not_Important(WebElement message) {
+        try {
+            new WebDriverWait(driver, 5
+                ).until(ExpectedConditions.visibilityOf(message.findElement(By.xpath(label_Not_Important))));
+        }
+        catch (TimeoutException e){
+            return false;
+        }
+        catch(NoSuchElementException e){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isMessageHasAttachment(WebElement message) {
+        try {
+            new WebDriverWait(driver, 5
+            ).until(ExpectedConditions.visibilityOf(message.findElement(By.xpath(labelHasAttach))));
+        }
+        catch (TimeoutException e) {
+            return false;
+        }
+        catch(NoSuchElementException e){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isVisibleAlertAttachLimit() {
+        try{
+            new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOf(errorAttachAlert));
+        }
+        catch(TimeoutException e){
+            return false;
+        }
+        catch(NoSuchContextException e){
+            return false;
+        }
+        return true;
+    }
+
+    public void waitForLoadingFile() {
         new WebDriverWait(driver, 10).until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[@class='dQ']")));
+    }
+
+    public void chooseThemesInContextMenu() {
+        themesInContextMenu.click();
+    }
+
+    public void clickTabThemes() {
+        themesInSettings.click();
+    }
+
+    public boolean isDownDropListVisible() {
+        return downDropList.isDisplayed();
+    }
+
+    public boolean isGeneralFormSettingsVisible() {
+        return generalFormSettingsVisible.isDisplayed();
+    }
+
+    public void clickBeachTheme() {
+        beachTheme.click();
+    }
+
+    public boolean isBackGroundChanged() {
+        try{
+            new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(beachBackGround));
+        }
+        catch (TimeoutException e){
+            logger.info("beachBackGround is not found");
+            return false;
+        }
+        catch (NoSuchContextException e){
+            logger.info("beachBackGround is not found");
+            return false;
+        }
+        return true;
+    }
+
+    public void clickButtonEmoticon() {
+        buttonEmoticon.click();
+    }
+
+    public void addSmiles() {
+        try {
+            robot = new Robot();
+            robot.keyPress(KeyEvent.VK_SHIFT);
+            smileYellowLaughInCompose.click();
+            smilePinkLaughInCompose.click();
+            robot.keyRelease(KeyEvent.VK_SHIFT);
+            buttonInsert.click();
+        } catch (AWTException e) {
+            logger.info("JavaRobot fail");
+        }
+    }
+
+
+    public boolean isMessageHasSmileAttachment(WebElement message) {
+        if(!isMessageHasAttachment(message)) return false;
+        message.click();
+        try{
+            new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(smilePinkLaughInMessage));
+            new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(smileYellowLaughInMessage));
+        }
+        catch(TimeoutException e){
+            logger.info("smile not found");
+        }
+        catch(NoSuchContextException e){
+            logger.info("smile not found");
+        }
+        return true;
     }
 }

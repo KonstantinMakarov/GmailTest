@@ -2,10 +2,7 @@ package com.epam.gmailtest.util;
 
 import org.apache.log4j.Logger;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Random;
 
 /**
@@ -27,21 +24,38 @@ public class Util {
     }
 
 
-    public static String getFile(int fileSize){
+    public static String getFile(long fileSize){
 
-        FileWriter fileWriter = null;
         File file = null;
+        RandomAccessFile randomAccessFile = null;
         try {
             file = new File("file.txt");
-            fileWriter = new FileWriter(file);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            while (file.length() < fileSize){
-                bufferedWriter.write("01234567890123456789");
-            }
+            randomAccessFile = new RandomAccessFile(file, "rw");
+            randomAccessFile.setLength(fileSize);
             logger.info("File was created with size = " + file.length());
         } catch (IOException e) {
             logger.error("File exception!!!");
         }
+        finally {
+            try {
+                randomAccessFile.close();
+            } catch (IOException e) {
+                logger.error("File exception!!!");
+            }
+        }
         return file.getAbsolutePath();
+    }
+
+    public static void deleteFile(String filePath) {
+        File file = null;
+        try{
+            file = new File(filePath);
+            if(file.delete()){
+                logger.info("File was deleted");
+            }
+        }
+        catch(Exception e){
+            logger.info("deletion is failed");
+        }
     }
 }

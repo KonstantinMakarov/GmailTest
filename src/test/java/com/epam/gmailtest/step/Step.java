@@ -27,7 +27,7 @@ public class Step {
     public void initBrowser() {
         driver = new FirefoxDriver();
         driver.manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
         logger.info("Browser started");
     }
 
@@ -87,10 +87,14 @@ public class Step {
 
     //----------------Task2--------------
 
-    public void goToForwardPage() {
+    public void goToSettings(){
         getMainPage();
         mainPage.clickButtonSettings();
         mainPage.chooseSettingsInContextMenu();
+    }
+
+    public void chooseTabForwardingAndPOP_IMAP() {
+        getMainPage();
         mainPage.chooseForwardingAndPOP_IMAP();
     }
 
@@ -117,11 +121,12 @@ public class Step {
         driver.switchTo().window(parentWindow);
     }
 
-    public void chooseRadiobuttonForwardACopyOfIncomingMailTo() {
+    public void setRadiobuttonForwardACopyOfIncomingMailTo() {
         mainPage.clickRadiobuttonForwardACopyOfIncomingMailTo();
+        mainPage.clickButtonSaveChanges();
     }
 
-    public void chooseFiltersTab() {
+    public void chooseTabFilters() {
         mainPage.clickButtonFilters();
     }
 
@@ -136,14 +141,85 @@ public class Step {
         mainPage.clickButtonCreateFilter();
     }
 
-    public void writeRandomMessageWithAttachTo(String email) {
+    public void writeRandomMessageWithFileAttachTo(String email, long fileSize) {
         logger.info("try to write message...");
         getMainPage();
         mainPage.clickButtonCompose();
         mainPage.fillReceiver(email);
         mainPage.fillSubject(Util.getRandomString(5));
         mainPage.fillMessage(Util.getRandomString(20));
-        mainPage.attachFile(Util.getFile(1048576));
+        String filePath = Util.getFile(fileSize);
+        mainPage.attachFile(filePath);
+        if(fileSize < 26214401){
+            mainPage.waitForLoadingFile();
+            mainPage.clickButtonSend();
+        }
+        Util.deleteFile(filePath);
+    }
+
+    public boolean isLetterFromUser1WithAttach_InTrash_AndMarkAsImportant(String userEmail) {
+        getMainPage();
+        mainPage.goToBin();
+        List<WebElement> trashMessages = mainPage.getUnreadMessagesFromUser(userEmail);
+        return trashMessages.size() > 0 && (mainPage.isMessageMarkAsImportant(trashMessages.get(0)) &&
+                                                mainPage.isMessageHasAttachment(trashMessages.get(0)));
+    }
+
+    public boolean isLetterFromUser1WithoutAttach_InInbox_NotMarkAsImportant(String userEmail) {
+        getMainPage();
+        mainPage.goToInbox();
+        List<WebElement> inboxMessages = mainPage.getUnreadMessagesFromUser(userEmail);
+        return inboxMessages.size() > 0 && (mainPage.isMessageMarkAs_Not_Important(inboxMessages.get(0)) &&
+                                                (mainPage.isMessageHasAttachment(inboxMessages.get(0))==false));
+    }
+
+    public boolean isLetterFromUserWithoutAttachIsInInbox(String userEmail) {
+        getMainPage();
+        List<WebElement> inboxMessages = mainPage.getUnreadMessagesFromUser(userEmail);
+        return inboxMessages.size() > 0 && (mainPage.isMessageHasAttachment(inboxMessages.get(0))==false);
+    }
+
+    public boolean isVisibleWarningMessageThatSizeOfFileIsBiggerThanNormal() {
+        getMainPage();
+        return mainPage.isVisibleAlertAttachLimit();
+    }
+
+    public void goToThemes() {
+        getMainPage();
+        mainPage.clickButtonSettings();
+        mainPage.chooseThemesInContextMenu();
+    }
+
+    public void chooseTabThemes() {
+        getMainPage();
+        mainPage.clickTabThemes();
+    }
+
+    public void clickBeachTheme() {
+        getMainPage();
+        mainPage.clickBeachTheme();
+    }
+
+    public boolean isBackGroundChanged() {
+        return mainPage.isBackGroundChanged();
+    }
+
+    public void writeRandomMessageWithEmoticonAttachTo(String email) {
+        getMainPage();
+        mainPage.clickButtonCompose();
+        mainPage.fillReceiver(email);
+        mainPage.fillSubject(Util.getRandomString(5));
+        mainPage.fillMessage(Util.getRandomString(20));
+        mainPage.clickButtonEmoticon();
+        mainPage.addSmiles();
         mainPage.clickButtonSend();
+    }
+
+
+    public boolean isLetterFromUserWithEmoticonAttach(String email) {
+        getMainPage();
+        List<WebElement> messages = mainPage.getUnreadMessagesFromUser(email);
+
+        return messages.size() > 0 && mainPage.isMessageHasSmileAttachment(messages.get(0));
     }
 }
