@@ -42,16 +42,13 @@ public class MainPage {
     @FindBy(xpath = "//div[@role='main']//tr[@class='zA yO']")
     private WebElement readMessage;
 
-    @FindBy(xpath = "//div[@role='main']//tr[@class='zA yO'] | //div[@role='main']//tr[@class='zA zE']")
-    private List<WebElement> allMessages;
-
     @FindBy(css = "div.T-Jo-auh")
     private WebElement checkBox;
 
     @FindBy(css = "div.asl.T-I-J3.J-J5-Ji")
     private WebElement buttonToSpam;
 
-    @FindBy(xpath = "//div[@class='T-I J-J5-Ji aFk T-I-ax7   ar7']")
+    @FindBy(xpath = "//div[@role='button' and text()='Not spam']")
     private WebElement button_Not_Spam;
 
     @FindBy(xpath = "//div[text()='Delete forever/..'")
@@ -94,7 +91,10 @@ public class MainPage {
     private WebElement radiobuttonForwardACopyOfIncomingMailTo;
 
     @FindBy(xpath = "//div[@class='nH Tv1JD']//button[@guidedhelpid='save_changes_button']")
-    private WebElement buttonSaveChanges;
+    private WebElement buttonSaveChangesForwarding;
+
+    @FindBy(xpath = "//div[@class='nH f2 hCyPr']//button[@guidedhelpid='save_changes_button']")
+    private WebElement buttonSaveChangesGeneral;
 
     @FindBy(xpath = "//div[contains(text(), 'You are forwarding')]")
     private WebElement noticeYouAreForwardingYourEMail;
@@ -129,7 +129,7 @@ public class MainPage {
     @FindBy(xpath = "//div[@class='a1 aaA aMZ']")
     private WebElement buttonAttachFiles;
 
-    @FindBy(xpath = "//a[@href='https://mail.google.com/mail/u/0/#inbox']")
+    @FindBy(xpath = "//a[@class='J-Ke n0' and contains(@href, '#inbox')]")
     private WebElement buttonInbox;
 
     @FindBy(xpath = "//span[@class='Kj-JD-K7-K0']")
@@ -170,6 +170,21 @@ public class MainPage {
 
     @FindBy(xpath = "//div[@class='T-I J-J5-Ji T-I-atl L3' and text()='Insert']")
     private WebElement buttonInsert;
+
+    @FindBy(xpath = "//div[@role='main']//tr[@class='zA zE' or @class='zA yO']")
+    private List<WebElement> allMessages;
+
+    @FindBy(xpath = "//span[@class='x2']")
+    private WebElement deleteAllSpamMessageNow;
+
+    @FindBy(xpath = "(//input[@name='sx_sg'])[2]")
+    private WebElement radioButtonSignature;
+
+    @FindBy(xpath = "(//div[@class='Am Al editable Xp0HJf-LW-avf'])[1]")
+    private WebElement signatureTextAria;
+
+    @FindBy(xpath = "//div[@class='gmail_signature']")
+    private WebElement signature;
 
     private final String labelImportant = "(//div[@class='pH'])[1]";
 
@@ -231,19 +246,11 @@ public class MainPage {
         logger.info("button send is clicked");
     }
 
-    public void tickMessageInInbox(WebElement message) {
+    public void tickMessage(WebElement message) {
 
         logger.info("try to tick message...");
 
-        message.findElement(By.xpath("(//td[@class='oZ-x3 xY'])[1]")).click();  //Inbox checkbox
-        logger.info("message is ticked");
-    }
-
-    public void tickMessageInSpam(WebElement message) {
-
-        logger.info("try to tick message...");
-
-        message.findElement(By.xpath("(//div[@class='oZ-jc T-Jo J-J5-Ji'])[1]")).click();  //Inbox checkbox
+        message.findElement(By.xpath("(//div[@role='main']//td[@class='oZ-x3 xY'])[1]")).click();  //Inbox checkbox
         logger.info("message is ticked");
     }
 
@@ -257,6 +264,7 @@ public class MainPage {
         logger.info("try to GoToSpamFolder...");
         inputSearch.sendKeys("in:spam");
         buttonSearch.click();
+        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(deleteAllSpamMessageNow));
         logger.info("in SpamFolder");
     }
 
@@ -309,8 +317,8 @@ public class MainPage {
         radiobuttonForwardACopyOfIncomingMailTo.click();
     }
 
-    public void clickButtonSaveChanges() {
-        buttonSaveChanges.click();
+    public void clickButtonSaveChangesForwarding() {
+        buttonSaveChangesForwarding.click();
         new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(noticeYouAreForwardingYourEMail));
     }
 
@@ -519,12 +527,30 @@ public class MainPage {
     }
 
     public List<WebElement> getAllMessages() {
-        List<WebElement> allMessages = unreadMessage.findElements(By.xpath("."));
-        allMessages.addAll(readMessage.findElements(By.xpath(".")));
+        logger.info("All messages size = " + allMessages.size());
         return allMessages;
     }
 
     public void clickButton_Not_Spam() {
+        logger.info("Try to click button 'Not Spam'..");
         button_Not_Spam.click();
+        logger.info("button was clicked");
+    }
+
+    public void tickRadioButtonSignature() {
+        radioButtonSignature.click();
+    }
+
+    public void createSignature(String signature) {
+        signatureTextAria.sendKeys(signature);
+    }
+
+    public boolean isSignatureVisible() {
+        return signature.isDisplayed();
+    }
+
+    public void clickButtonSaveChangesGeneral() {
+        buttonSaveChangesGeneral.click();
+        new WebDriverWait(driver, 1);
     }
 }

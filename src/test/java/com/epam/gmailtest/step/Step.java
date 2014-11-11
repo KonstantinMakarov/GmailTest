@@ -67,7 +67,7 @@ public class Step {
         logger.info("try to mark message like spam...");
         getMainPage();
         WebElement spamMessage = mainPage.getUnreadMessagesFromUser(email).get(0);
-        mainPage.tickMessageInInbox(spamMessage);
+        mainPage.tickMessage(spamMessage);
         mainPage.clickButtonToSpam();
         logger.info("message was marked");
     }
@@ -123,7 +123,7 @@ public class Step {
 
     public void setRadiobuttonForwardACopyOfIncomingMailTo() {
         mainPage.clickRadiobuttonForwardACopyOfIncomingMailTo();
-        mainPage.clickButtonSaveChanges();
+        mainPage.clickButtonSaveChangesForwarding();
     }
 
     public void chooseTabFilters() {
@@ -227,17 +227,19 @@ public class Step {
         logger.info("try to mark message like spam...");
         getMainPage();
         WebElement spamMessage = mainPage.getAllMessages().get(0);
-        mainPage.tickMessageInInbox(spamMessage);
+        mainPage.tickMessage(spamMessage);
         mainPage.clickButtonToSpam();
         logger.info("message was marked");
     }
 
     public void markMessageLike_Not_Spam() {
+        logger.info("try to mark message like NOT spam...");
         getMainPage();
         mainPage.goToSpamFolder();
         WebElement notSpamMessage = mainPage.getAllMessages().get(0);
-        mainPage.tickMessageInSpam(notSpamMessage);
+        mainPage.tickMessage(notSpamMessage);
         mainPage.clickButton_Not_Spam();
+        logger.info("message was marked");
     }
 
 
@@ -245,5 +247,23 @@ public class Step {
         getMainPage();
         mainPage.goToInbox();
         return mainPage.getAllMessages().get(0).isDisplayed();
+    }
+
+    public void openTabGeneral() {
+        getMainPage();
+        mainPage.clickButtonSettings();
+        mainPage.chooseSettingsInContextMenu();
+    }
+
+    public void createSignature() {
+        getMainPage();
+        mainPage.tickRadioButtonSignature();
+        mainPage.createSignature(Util.getRandomString(15));
+        mainPage.clickButtonSaveChangesGeneral();
+    }
+
+    public boolean isNewMessagesHasSignature() {
+        mainPage.clickButtonCompose();
+        return mainPage.isSignatureVisible();
     }
 }
