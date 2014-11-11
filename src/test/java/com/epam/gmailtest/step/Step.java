@@ -67,7 +67,7 @@ public class Step {
         logger.info("try to mark message like spam...");
         getMainPage();
         WebElement spamMessage = mainPage.getUnreadMessagesFromUser(email).get(0);
-        mainPage.tickMessageFromSpammer(spamMessage);
+        mainPage.tickMessageInInbox(spamMessage);
         mainPage.clickButtonToSpam();
         logger.info("message was marked");
     }
@@ -221,5 +221,29 @@ public class Step {
         List<WebElement> messages = mainPage.getUnreadMessagesFromUser(email);
 
         return messages.size() > 0 && mainPage.isMessageHasSmileAttachment(messages.get(0));
+    }
+
+    public void markTopMessageLikeSpam() {
+        logger.info("try to mark message like spam...");
+        getMainPage();
+        WebElement spamMessage = mainPage.getAllMessages().get(0);
+        mainPage.tickMessageInInbox(spamMessage);
+        mainPage.clickButtonToSpam();
+        logger.info("message was marked");
+    }
+
+    public void markMessageLike_Not_Spam() {
+        getMainPage();
+        mainPage.goToSpamFolder();
+        WebElement notSpamMessage = mainPage.getAllMessages().get(0);
+        mainPage.tickMessageInSpam(notSpamMessage);
+        mainPage.clickButton_Not_Spam();
+    }
+
+
+    public boolean isMessageReturnToInbox() {
+        getMainPage();
+        mainPage.goToInbox();
+        return mainPage.getAllMessages().get(0).isDisplayed();
     }
 }

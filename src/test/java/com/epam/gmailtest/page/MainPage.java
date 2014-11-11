@@ -39,14 +39,20 @@ public class MainPage {
     @FindBy(xpath = "//div[@role='main']//tr[@class='zA zE']")
     private WebElement unreadMessage;
 
-    @FindBy(xpath = "//tr[@class='zA yO']")
+    @FindBy(xpath = "//div[@role='main']//tr[@class='zA yO']")
     private WebElement readMessage;
+
+    @FindBy(xpath = "//div[@role='main']//tr[@class='zA yO'] | //div[@role='main']//tr[@class='zA zE']")
+    private List<WebElement> allMessages;
 
     @FindBy(css = "div.T-Jo-auh")
     private WebElement checkBox;
 
     @FindBy(css = "div.asl.T-I-J3.J-J5-Ji")
     private WebElement buttonToSpam;
+
+    @FindBy(xpath = "//div[@class='T-I J-J5-Ji aFk T-I-ax7   ar7']")
+    private WebElement button_Not_Spam;
 
     @FindBy(xpath = "//div[text()='Delete forever/..'")
     private WebElement buttonDelete;
@@ -225,11 +231,19 @@ public class MainPage {
         logger.info("button send is clicked");
     }
 
-    public void tickMessageFromSpammer(WebElement message) {
+    public void tickMessageInInbox(WebElement message) {
 
         logger.info("try to tick message...");
 
-        message.findElement(By.xpath("(//div[@class='T-Jo-auh'])[1]")).click();  //Inbox checkbox
+        message.findElement(By.xpath("(//td[@class='oZ-x3 xY'])[1]")).click();  //Inbox checkbox
+        logger.info("message is ticked");
+    }
+
+    public void tickMessageInSpam(WebElement message) {
+
+        logger.info("try to tick message...");
+
+        message.findElement(By.xpath("(//div[@class='oZ-jc T-Jo J-J5-Ji'])[1]")).click();  //Inbox checkbox
         logger.info("message is ticked");
     }
 
@@ -502,5 +516,15 @@ public class MainPage {
             logger.info("smile not found");
         }
         return true;
+    }
+
+    public List<WebElement> getAllMessages() {
+        List<WebElement> allMessages = unreadMessage.findElements(By.xpath("."));
+        allMessages.addAll(readMessage.findElements(By.xpath(".")));
+        return allMessages;
+    }
+
+    public void clickButton_Not_Spam() {
+        button_Not_Spam.click();
     }
 }

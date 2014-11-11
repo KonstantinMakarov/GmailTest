@@ -2,8 +2,10 @@ package com.epam.gmailtest.main;
 
 
 import com.epam.gmailtest.step.Step;
+import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
  * Created by Kanstantsin_Makarau on 10/9/2014.
@@ -94,15 +96,6 @@ public class GmailAutomationTest {
 //        Assert.assertTrue(step.isVisibleWarningMessageThatSizeOfFileIsBiggerThanNormal());
 //    }
 //
-//    @Test(description = "GM#1.6")
-//    public void themes(){
-//        step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
-//        step.goToSettings();
-//        step.chooseTabThemes();
-//        step.clickBeachTheme();
-//        Assert.assertTrue(step.isBackGroundChanged());
-//    }
-
 //    @Test(description = "GM#1.5")
 //    public void sendMailWithSomeAttachedEmoticons(){
 //        step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
@@ -113,6 +106,24 @@ public class GmailAutomationTest {
 //        step.loginGmail(USER2_LOGIN, USER2_PASSWORD);
 //        Assert.assertTrue(step.isLetterFromUserWithEmoticonAttach(USER1_LOGIN));
 //    }
+//
+//    @Test(description = "GM#1.6")
+//    public void themes(){
+//        step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
+//        step.goToSettings();
+//        step.chooseTabThemes();
+//        step.clickBeachTheme();
+//        Assert.assertTrue(step.isBackGroundChanged());
+//    }
+//
+    @Test(description = "GM#1.11")
+    public void markInboxMessagesSpamThanMarkItAsNotSpam(){
+        step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
+        step.markTopMessageLikeSpam();
+        step.markMessageLike_Not_Spam();
+        Assert.assertTrue(step.isMessageReturnToInbox());
+    }
+
 
 
     @AfterMethod(description = "Stop browser")
