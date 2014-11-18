@@ -1,7 +1,9 @@
 package com.epam.gmailtest.page;
 
+import com.epam.gmailtest.util.Util;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -186,6 +188,39 @@ public class MainPage {
     @FindBy(xpath = "//div[@class='gmail_signature']")
     private WebElement signature;
 
+    @FindBy(xpath = "(//div[@role='main']//span[@class='aXw T-KT'])[1]")
+    private WebElement star;
+
+    @FindBy(xpath = "//a[@class='J-Ke n0' and contains(@href, '#starred')]")
+    private WebElement starredFolder;
+
+    @FindBy(xpath = "//div[text()='Add sublabel']")
+    private WebElement buttonAddSublabel;
+
+    @FindBy(xpath = "//input[@class='xx']")
+    private WebElement inputNameOfInsertedShortcutField;
+
+    @FindBy(xpath = "//input[@class='ajJ' and @value='1']")
+    private WebElement CheckBoxNEST_LABEL_UNDERIsChosen;
+
+    @FindBy(xpath = "//button[text()='Create']")
+    private WebElement buttonCreateInsertedShortcut;
+
+    @FindBy(xpath = "//a[@title='My inserted shortcut']")
+    private WebElement buttonInsertedShortcut;
+
+    @FindBy(xpath = "//span[text()='Label colour ']")
+    private WebElement buttonLabelColour;
+
+    @FindBy(xpath = "(//td[@class='JA-Kn-Jr-Kw-Jn']/div)[1]")
+    private WebElement firstOfOfferedColours;
+
+    @FindBy(xpath = "//label[contains(text(), 'Label ')]/../input")
+    private WebElement radioButtonLabelAndItsSublabels;
+
+    @FindBy(xpath = "//button[text()='Set colour']")
+    private WebElement buttonSetColour;
+
     private final String labelImportant = "(//div[@class='pH'])[1]";
 
     private final String label_Not_Important = "(//div[@class='pH-A7'])[1]";
@@ -203,7 +238,7 @@ public class MainPage {
 
     public void deleteSpamMessages() {
         //todo почистить за собой
-        logger.info("try to delete messages from our spammer...");
+        logger.info("try to delete messages from our spammer..");
         List<WebElement> readMessages = readMessage.findElements(By.xpath("//span[@email='epamlab.user1@gmail.com']"));
         for(WebElement currentMessage : readMessages){
             currentMessage.findElement(By.xpath("/../..//td[@class='oZ-x3 xY']")).click();      //Spam checkbox !НЕ РАБОТАЕТ!
@@ -213,27 +248,27 @@ public class MainPage {
     }
 
     public void clickButtonCompose() {
-        logger.info("try to click button Compose...");
+        logger.info("try to click button Compose..");
         new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(buttonCompose));
         buttonCompose.click();
         logger.info("button compose is clicked");
     }
 
     public void fillReceiver(String receiverLogin) {
-        logger.info("try to fill receiver field...");
+        logger.info("try to fill receiver field..");
         new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(inputMessageReceiver));
         inputMessageReceiver.sendKeys(receiverLogin);
         logger.info("receiver field is filled");
     }
 
     public void fillSubject(String subject) {
-        logger.info("try to fill subject field...");
+        logger.info("try to fill subject field..");
         inputMessageSubject.sendKeys(subject);
         logger.info("subject field is filled");
     }
 
     public void fillMessage(String message) {
-        logger.info("try to fill message field...");
+        logger.info("try to fill message field..");
 
         inputMessageText.sendKeys(message);
 
@@ -241,27 +276,27 @@ public class MainPage {
     }
 
     public void clickButtonSend() {
-        logger.info("try to click button Send...");
+        logger.info("try to click button Send..");
         buttonSend.click();
         logger.info("button send is clicked");
     }
 
     public void tickMessage(WebElement message) {
 
-        logger.info("try to tick message...");
+        logger.info("try to tick message..");
 
         message.findElement(By.xpath("(//div[@role='main']//td[@class='oZ-x3 xY'])[1]")).click();  //Inbox checkbox
         logger.info("message is ticked");
     }
 
     public void clickButtonToSpam() {
-        logger.info("try to click button ToSpam...");
+        logger.info("try to click button ToSpam..");
         buttonToSpam.click();
         logger.info("button ToSpam is clicked");
     }
 
     public void goToSpamFolder() {
-        logger.info("try to GoToSpamFolder...");
+        logger.info("try to GoToSpamFolder..");
         inputSearch.sendKeys("in:spam");
         buttonSearch.click();
         new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(deleteAllSpamMessageNow));
@@ -281,14 +316,17 @@ public class MainPage {
     }
 
     public void clickButtonSettings() {
+        logger.info("Try to click button settings");
         new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(buttonSettings));
         buttonSettings.click();
+        logger.info("button settings was clicked");
     }
 
     public void chooseSettingsInContextMenu() {
-
+        logger.info("Try to click SETTINGS in context menu");
         new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOf(buttonSettingsInner));
         buttonSettingsInner.click();
+        logger.info("SETTINGS in context menu was clicked");
     }
 
     public void chooseForwardingAndPOP_IMAP() {
@@ -360,10 +398,10 @@ public class MainPage {
             buttonOkInConfirmDiscardChanges.click();
         }
         catch(TimeoutException e){
-            logger.info("Confirm discard changes is invisible. Try to go on...");
+            logger.info("Confirm discard changes is invisible. Try to go on..");
         }
         catch(NoSuchElementException e){
-            logger.info("Confirm discard changes is invisible. Try to go on...");
+            logger.info("Confirm discard changes is invisible. Try to go on..");
         }
     }
 
@@ -511,6 +549,7 @@ public class MainPage {
 
 
     public boolean isMessageHasSmileAttachment(WebElement message) {
+        logger.info("Check message has smile attachment");
         if(!isMessageHasAttachment(message)) return false;
         message.click();
         try{
@@ -538,19 +577,125 @@ public class MainPage {
     }
 
     public void tickRadioButtonSignature() {
+        logger.info("Try to tick radiobutton signature..");
         radioButtonSignature.click();
+        logger.info("Radiobutton signature was ticked");
     }
 
     public void createSignature(String signature) {
+        logger.info("Try to set signature..");
         signatureTextAria.sendKeys(signature);
+        logger.info("Signature was set");
     }
 
     public boolean isSignatureVisible() {
+        logger.info("Check visibility of signature");
         return signature.isDisplayed();
     }
 
     public void clickButtonSaveChangesGeneral() {
+        logger.info("Try to click button SAVE CHANGES..");
         buttonSaveChangesGeneral.click();
         new WebDriverWait(driver, 1);
+        logger.info("Button SAVE CHANGES was clicked");
+    }
+
+    public void clickOnStar() {
+        logger.info("Try to click star..");
+        star.click();
+        logger.info("star was clicked");
+    }
+
+    public void goToStarredFolder() {
+        logger.info("Go to STARRED folder");
+        starredFolder.click();
+    }
+
+    public boolean isStarredMessageVisible() {
+        logger.info("Try to find starred message..");
+        return !getAllMessages().isEmpty();
+    }
+
+    public void clickTriangleOfShortcut(String parentShortcutName) {
+        StringBuilder stringBuilderPath = new StringBuilder(getShortcutXPath(parentShortcutName));
+        stringBuilderPath.append("/../../..//div[@class='p8']");    //треугольник
+
+        driver.findElement(By.xpath(stringBuilderPath.toString())).click();
+    }
+
+    public void clickButtonAddSublable() {
+        buttonAddSublabel.click();
+    }
+
+    public void inputNameOfInsertedShortcut(String insertedShortcutName) {
+        inputNameOfInsertedShortcutField.sendKeys(insertedShortcutName);
+    }
+
+    public boolean isCheckBoxNEST_LABEL_UNDERChosen() {
+        return CheckBoxNEST_LABEL_UNDERIsChosen.isDisplayed();
+    }
+
+    public boolean isParentShortcutEquals(String usersShortcutName) {
+        StringBuilder stringBuilderPath = new StringBuilder();
+        stringBuilderPath.append("//option[@value='");
+        stringBuilderPath.append(usersShortcutName);
+        stringBuilderPath.append("']");
+        return driver.findElement(By.xpath(stringBuilderPath.toString())).isDisplayed();
+    }
+
+    public void clickCreateShortcutButton() {
+        buttonCreateInsertedShortcut.click();
+    }
+
+    public boolean isInsertedShortcutVisible(String insertedShortcutName) {
+        StringBuilder stringBuilderPath = new StringBuilder();
+        stringBuilderPath.append("//a[@title='");
+        stringBuilderPath.append(insertedShortcutName);
+        stringBuilderPath.append("']");
+        return driver.findElement(By.xpath(stringBuilderPath.toString())).isDisplayed();
+    }
+
+    public void moveToShortcutButton(String parentShortcutName) {
+        logger.info("Try to move mouse to shortcut");
+        String shortcutXPath = getShortcutXPath(parentShortcutName);
+
+        new Actions(driver).moveToElement(driver.findElement(By.xpath(shortcutXPath))).build().perform();
+        new WebDriverWait(driver, 1);
+        logger.info("mouse was moved");
+    }
+
+    public void clickButtonLabelColor() {
+        buttonLabelColour.click();
+    }
+
+    public String clickTheOneOfTheOfferedColours() {
+        String styleAttribute = firstOfOfferedColours.getAttribute("style");
+        firstOfOfferedColours.click();
+        return Util.hexColorCode(styleAttribute);
+    }
+
+    public void chooseLabelAndItsSublabelsRadioButton() {
+        radioButtonLabelAndItsSublabels.click();
+    }
+
+    public void clickButtonSetColour() {
+        buttonSetColour.click();
+    }
+
+    public boolean isBackgroundColorsOfShortCutEquals(String parentShortcutName, String expectedBackgroundColor) {
+        StringBuilder stringBuilderPath = new StringBuilder(getShortcutXPath(parentShortcutName));
+        stringBuilderPath.append("/../../..//div[@class='p6']");    //треугольник с бэкграундом
+        WebElement triangleBackground = driver.findElement(By.xpath(stringBuilderPath.toString()));
+        //todo ArrayIndexOutOfBoundsException: 1 плохо сплитит по '#' и не нажимает треугольник
+        String actualBackgroundColor = triangleBackground.getAttribute("style").split("#")[1];
+        return expectedBackgroundColor.equals(actualBackgroundColor);
+    }
+
+    private String getShortcutXPath(String parentShortcutName) {
+        StringBuilder stringBuilderPath = new StringBuilder();
+        stringBuilderPath.append("//a[contains(text(), '");
+        stringBuilderPath.append(parentShortcutName);
+        stringBuilderPath.append("')]");
+        return stringBuilderPath.toString();
     }
 }

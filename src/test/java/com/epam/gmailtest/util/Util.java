@@ -4,6 +4,8 @@ import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Kanstantsin_Makarau on 10/9/2014.
@@ -57,5 +59,17 @@ public class Util {
         catch(Exception e){
             logger.info("deletion is failed");
         }
+    }
+
+    public static String hexColorCode(String styleAttribute) {
+        String backgroundColor = styleAttribute.split(";")[0];
+        StringBuilder hexColor = new StringBuilder();
+        Pattern pattern = Pattern.compile("\\d+");
+        Matcher matcher = pattern.matcher(backgroundColor);
+        while(matcher.find()){
+            int a = Integer.parseInt(matcher.group());
+            hexColor.append(Integer.toHexString(a));
+        }
+        return hexColor.toString();
     }
 }

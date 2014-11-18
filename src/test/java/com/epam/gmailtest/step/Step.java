@@ -53,7 +53,7 @@ public class Step {
     }
 
     public void writeRandomMessageTo(String receiverLogin) {
-        logger.info("try to write message...");
+        logger.info("try to write message..");
         getMainPage();
         mainPage.clickButtonCompose();
         mainPage.fillReceiver(receiverLogin);
@@ -64,7 +64,7 @@ public class Step {
     }
 
     public void markMessageLikeSpam(String email) {
-        logger.info("try to mark message like spam...");
+        logger.info("try to mark message like spam..");
         getMainPage();
         WebElement spamMessage = mainPage.getUnreadMessagesFromUser(email).get(0);
         mainPage.tickMessage(spamMessage);
@@ -73,7 +73,7 @@ public class Step {
     }
 
     public boolean doWeHaveTwoMessagesInSpamFolderFrom(String email) {
-        logger.info("start checking spam folder...");
+        logger.info("start checking spam folder..");
         getMainPage();
         mainPage.goToSpamFolder();
         List<WebElement> spammerMessages = mainPage.getUnreadMessagesFromUser(email);
@@ -142,7 +142,7 @@ public class Step {
     }
 
     public void writeRandomMessageWithFileAttachTo(String email, long fileSize) {
-        logger.info("try to write message...");
+        logger.info("try to write message..");
         getMainPage();
         mainPage.clickButtonCompose();
         mainPage.fillReceiver(email);
@@ -205,6 +205,7 @@ public class Step {
     }
 
     public void writeRandomMessageWithEmoticonAttachTo(String email) {
+        logger.info("try to write message..");
         getMainPage();
         mainPage.clickButtonCompose();
         mainPage.fillReceiver(email);
@@ -217,6 +218,7 @@ public class Step {
 
 
     public boolean isLetterFromUserWithEmoticonAttach(String email) {
+        logger.info("Check letter from user with emoticon attach");
         getMainPage();
         List<WebElement> messages = mainPage.getUnreadMessagesFromUser(email);
 
@@ -244,26 +246,114 @@ public class Step {
 
 
     public boolean isMessageReturnToInbox() {
+        logger.info("Check message return to INBOX");
         getMainPage();
         mainPage.goToInbox();
         return mainPage.getAllMessages().get(0).isDisplayed();
     }
 
     public void openTabGeneral() {
+        logger.info("Try to open general tab");
         getMainPage();
         mainPage.clickButtonSettings();
         mainPage.chooseSettingsInContextMenu();
+        logger.info("general tab was opened");
     }
 
     public void createSignature() {
+        logger.info("Try to create signature");
         getMainPage();
         mainPage.tickRadioButtonSignature();
         mainPage.createSignature(Util.getRandomString(15));
         mainPage.clickButtonSaveChangesGeneral();
+        logger.info("Signature was created");
     }
 
     public boolean isNewMessagesHasSignature() {
         mainPage.clickButtonCompose();
         return mainPage.isSignatureVisible();
+    }
+
+    public void markMessageLikeStarred() {
+        logger.info("Try to mark message like starred...");
+        getMainPage();
+        mainPage.clickOnStar();
+        logger.info("Message was marked");
+    }
+
+    public boolean isMessageInStarredFolder() {
+        logger.info("Check starred message:");
+        getMainPage();
+        mainPage.goToStarredFolder();
+        return mainPage.isStarredMessageVisible();
+    }
+
+    public void clickTriangleTheLeftOfTheUsersShortcutName(String usersShortcutName) {
+        logger.info("Try to click triangle the left of the users shortcut");
+        getMainPage();
+        mainPage.moveToShortcutButton(usersShortcutName);
+        mainPage.clickTriangleOfShortcut(usersShortcutName);
+        logger.info("Triangle was clicked");
+    }
+
+    public void clickAddSublable() {
+        logger.info("Try to click button add Sublable");
+        mainPage.clickButtonAddSublable();
+    }
+
+    public void inputNameOfInsertedShortcut(String insertedShortcutName) {
+        logger.info("Try to input inserted shortcut name");
+        mainPage.inputNameOfInsertedShortcut(insertedShortcutName);
+        logger.info("Inserted shortcut name was entered");
+    }
+
+    public boolean isCheckBoxNEST_LABEL_UNDERChosen() {
+        logger.info("Try to check NEST LABEL UNDER");
+        return mainPage.isCheckBoxNEST_LABEL_UNDERChosen();
+    }
+
+    public boolean isParentShortcutEquals(String usersShortcutName) {
+        logger.info("Try to check equals of parent and actual names of shortcuts");
+        return mainPage.isParentShortcutEquals(usersShortcutName);
+    }
+
+    public void clickCreateShortcutButton() {
+        logger.info("Try to click button CREATE");
+        mainPage.clickCreateShortcutButton();
+        logger.info("Button was clicked");
+    }
+
+    public boolean isInsertedShortcutVisible(String insertedShortcutName) {
+        logger.info("Try to check visibility of inserted shortcut");
+        return mainPage.isInsertedShortcutVisible(insertedShortcutName);
+    }
+
+    public void clickButtonLabelColor() {
+        logger.info("Try to click button LABEL COLOR");
+        getMainPage();
+        mainPage.clickButtonLabelColor();
+        logger.info("button LABEL COLOR was clicked");
+    }
+
+    public String chooseAndClickTheOneOfTheOfferedColours() {
+        logger.info("Try to choose and click the one of the offered colours");
+        return mainPage.clickTheOneOfTheOfferedColours();
+    }
+
+    public void chooseLabelAndItsSublabelsRadioButton() {
+        logger.info("Try to click radiobutton LabelAndItsSublabels");
+        mainPage.chooseLabelAndItsSublabelsRadioButton();
+        logger.info("radiobutton was clicked");
+    }
+
+    public void clickButtonSetColour() {
+        logger.info("Try to click button SET COLOUR");
+        mainPage.clickButtonSetColour();
+        logger.info("button SET COLOUR");
+    }
+
+    public boolean isBackgroundColorsOfShortCutEquals(String parentShortcutName, String backgroundColor) {
+        logger.info("Check equals of background colors of shortcut");
+        return mainPage.isBackgroundColorsOfShortCutEquals(parentShortcutName, backgroundColor);
     }
 }
