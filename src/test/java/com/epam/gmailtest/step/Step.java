@@ -291,7 +291,6 @@ public class Step {
     public void clickTriangleTheLeftOfTheUsersShortcutName(String usersShortcutName) {
         logger.info("Try to click triangle the left of the users shortcut");
         getMainPage();
-        mainPage.moveToShortcutButton(usersShortcutName);
         mainPage.clickTriangleOfShortcut(usersShortcutName);
         logger.info("Triangle was clicked");
     }

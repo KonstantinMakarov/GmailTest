@@ -209,7 +209,7 @@ public class MainPage {
     @FindBy(xpath = "//a[@title='My inserted shortcut']")
     private WebElement buttonInsertedShortcut;
 
-    @FindBy(xpath = "//span[text()='Label colour ']")
+    @FindBy(xpath = "//div[@class='J-N-Jz']/span/..")
     private WebElement buttonLabelColour;
 
     @FindBy(xpath = "(//td[@class='JA-Kn-Jr-Kw-Jn']/div)[1]")
@@ -617,10 +617,14 @@ public class MainPage {
     }
 
     public void clickTriangleOfShortcut(String parentShortcutName) {
-        StringBuilder stringBuilderPath = new StringBuilder(getShortcutXPath(parentShortcutName));
-        stringBuilderPath.append("/../../..//div[@class='p8']");    //треугольник
+        String shortcutXPath = getShortcutXPath(parentShortcutName);
+        Actions action = new Actions(driver);
+        action.moveToElement(driver.findElement(By.xpath(shortcutXPath))).build();
 
-        driver.findElement(By.xpath(stringBuilderPath.toString())).click();
+        StringBuilder stringBuilderPath = new StringBuilder(getShortcutXPath(parentShortcutName));
+        stringBuilderPath.append("/../../..//div[@class='p6']");    //треугольник
+        WebElement triangleButton = driver.findElement(By.xpath(stringBuilderPath.toString()));
+        action.click(triangleButton).build().perform();
     }
 
     public void clickButtonAddSublable() {
@@ -655,15 +659,6 @@ public class MainPage {
         return driver.findElement(By.xpath(stringBuilderPath.toString())).isDisplayed();
     }
 
-    public void moveToShortcutButton(String parentShortcutName) {
-        logger.info("Try to move mouse to shortcut");
-        String shortcutXPath = getShortcutXPath(parentShortcutName);
-
-        new Actions(driver).moveToElement(driver.findElement(By.xpath(shortcutXPath))).build().perform();
-        new WebDriverWait(driver, 1);
-        logger.info("mouse was moved");
-    }
-
     public void clickButtonLabelColor() {
         buttonLabelColour.click();
     }
@@ -683,11 +678,16 @@ public class MainPage {
     }
 
     public boolean isBackgroundColorsOfShortCutEquals(String parentShortcutName, String expectedBackgroundColor) {
+        Actions action = new Actions(driver);
         StringBuilder stringBuilderPath = new StringBuilder(getShortcutXPath(parentShortcutName));
+        action.moveToElement(driver.findElement(By.xpath(stringBuilderPath.toString()))).build();   //навести на шорткат
+
         stringBuilderPath.append("/../../..//div[@class='p6']");    //треугольник с бэкграундом
+        action.click(driver.findElement(By.xpath(stringBuilderPath.toString()))).build().perform(); //навести на треугольник
         WebElement triangleBackground = driver.findElement(By.xpath(stringBuilderPath.toString()));
-        //todo ArrayIndexOutOfBoundsException: 1 плохо сплитит по '#' и не нажимает треугольник
-        String actualBackgroundColor = triangleBackground.getAttribute("style").split("#")[1];
+
+        String actualBackgroundColor = Util.hexColorCode(triangleBackground.getAttribute("style"));
+        logger.info("expected = "+ expectedBackgroundColor +"; actual = " + actualBackgroundColor);
         return expectedBackgroundColor.equals(actualBackgroundColor);
     }
 

@@ -63,7 +63,7 @@ public class Util {
 
     public static String hexColorCode(String styleAttribute) {
         String backgroundColor = styleAttribute.split(";")[0];
-        StringBuilder hexColor = new StringBuilder();
+        StringBuilder hexColor = new StringBuilder("#");
         Pattern pattern = Pattern.compile("\\d+");
         Matcher matcher = pattern.matcher(backgroundColor);
         while(matcher.find()){

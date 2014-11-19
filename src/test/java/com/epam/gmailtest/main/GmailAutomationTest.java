@@ -139,7 +139,7 @@ public class GmailAutomationTest {
         Assert.assertTrue(step.isInsertedShortcutVisible(insertedShortcutName));
     }
 
-    @Test(description = "GM#1.9")
+    @Test(description = "GM#1.9", enabled = false)
     public void changeShortcut(){
         logger.info("GM#1.9");
         step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
@@ -149,6 +149,12 @@ public class GmailAutomationTest {
         step.chooseLabelAndItsSublabelsRadioButton();
         step.clickButtonSetColour();
         Assert.assertTrue(step.isBackgroundColorsOfShortCutEquals(parentShortcutName, backgroundColor));
+    }
+
+    @Test(description = "GM#1.10")
+    public void deleteShortcut (){
+        logger.info("GM#1.10");
+        step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
     }
 
     @Test(description = "GM#1.11", enabled = false)
