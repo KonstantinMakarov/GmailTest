@@ -8,9 +8,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-/**
- * Created by Kanstantsin_Makarau on 10/9/2014.
- */
 public class GmailAutomationTest {
     private Step step;
     private final String USER1_LOGIN = "epamlab.user1@gmail.com";
@@ -21,6 +18,9 @@ public class GmailAutomationTest {
     private final String USER3_PASSWORD = "labuser3";
     private final String parentShortcutName = "My shortcut";
     private final String insertedShortcutName = "My inserted shortcut";
+    private final String gmailAutoReply = "forwarding-noreply@google.com";
+    private final long fileSize = 1048576;
+    private final long fileSizeMoreThan25Mb = 26214401;
 
     public final static Logger logger = Logger.getLogger(GmailAutomationTest.class);
 
@@ -50,8 +50,8 @@ public class GmailAutomationTest {
 
         step.loginGmail(USER2_LOGIN, USER2_PASSWORD);
         boolean twoMessagesInSpamFolder = step.doWeHaveTwoMessagesInSpamFolderFrom(USER1_LOGIN);
-        //step.deleteSpamMessages();              //этого нет в сценари
         Assert.assertEquals(twoMessagesInSpamFolder, true);
+       logger.info("finished GM#1.1");
    }
 
     @Test(description = "GM#1.2", enabled = false)
@@ -65,7 +65,7 @@ public class GmailAutomationTest {
 
         step.initBrowser();
         step.loginGmail(USER3_LOGIN, USER3_PASSWORD);
-        step.confirmForwardFromUser2("forwarding-noreply@google.com");
+        step.confirmForwardFromUser2(gmailAutoReply);
         step.stopBrowser();
 
         step.initBrowser();
@@ -75,12 +75,12 @@ public class GmailAutomationTest {
         step.setRadiobuttonForwardACopyOfIncomingMailTo();
         step.goToSettings();
         step.chooseTabFilters();
-        step.createANewFilterWithSettings(USER1_LOGIN); //todo универсальные settings
+        step.createANewFilterWithSettings(USER1_LOGIN);
         step.stopBrowser();
 
         step.initBrowser();
         step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
-        step.writeRandomMessageWithFileAttachTo(USER2_LOGIN, 1048576);
+        step.writeRandomMessageWithFileAttachTo(USER2_LOGIN, fileSize);
         step.writeRandomMessageTo(USER2_LOGIN);
         step.stopBrowser();
 
@@ -93,15 +93,16 @@ public class GmailAutomationTest {
         step.initBrowser();
         step.loginGmail(USER3_LOGIN, USER3_PASSWORD);
         Assert.assertTrue(step.isLetterFromUserWithoutAttachIsInInbox(USER1_LOGIN));
+        logger.info("finished GM#1.2");
     }
 
     @Test(description = "GM#1.3", enabled = false)
     public void mainMailBoxPage(){
         logger.info("start GM#1.3");
         step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
-        step.writeRandomMessageWithFileAttachTo(USER2_LOGIN, 26214401);
-        //connect 10.6.103.68:27015
+        step.writeRandomMessageWithFileAttachTo(USER2_LOGIN, fileSizeMoreThan25Mb);
         Assert.assertTrue(step.isVisibleWarningMessageThatSizeOfFileIsBiggerThanNormal());
+        logger.info("finished GM#1.3");
     }
 
     @Test(description = "GM#1.5", enabled = false)
@@ -114,6 +115,7 @@ public class GmailAutomationTest {
         step.initBrowser();
         step.loginGmail(USER2_LOGIN, USER2_PASSWORD);
         Assert.assertTrue(step.isLetterFromUserWithEmoticonAttach(USER1_LOGIN));
+        logger.info("finished GM#1.5");
     }
 
     @Test(description = "GM#1.6", enabled = false)
@@ -124,6 +126,7 @@ public class GmailAutomationTest {
         step.chooseTabThemes();
         step.clickBeachTheme();
         Assert.assertTrue(step.isBackGroundChanged());
+        logger.info("finished GM#1.6");
     }
 
     @Test(description = "GM#1.8", enabled = false)      //увести мышку из браузера
@@ -137,6 +140,7 @@ public class GmailAutomationTest {
         Assert.assertTrue(step.isParentShortcutEquals(parentShortcutName));
         step.clickCreateShortcutButton();
         Assert.assertTrue(step.isInsertedShortcutVisible(insertedShortcutName));
+        logger.info("finished GM#1.8");
     }
 
     @Test(description = "GM#1.9", enabled = false)
@@ -149,12 +153,19 @@ public class GmailAutomationTest {
         step.chooseLabelAndItsSublabelsRadioButton();
         step.clickButtonSetColour();
         Assert.assertTrue(step.isBackgroundColorsOfShortCutEquals(parentShortcutName, backgroundColor));
+        logger.info("finished GM#1.9");
     }
 
     @Test(description = "GM#1.10")
     public void deleteShortcut (){
-        logger.info("GM#1.10");
+        logger.info("start GM#1.10");
         step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
+        step.clickTriangleTheLeftOfTheUsersShortcutName(parentShortcutName);
+        step.clickRemoveLabel();
+        Assert.assertTrue(step.areBothShortcutsPresentedInDialog(parentShortcutName, insertedShortcutName));
+        step.clickDeleteButton();
+        Assert.assertTrue(step.areBothShortcutsDeleted(parentShortcutName));
+        logger.info("finished GM#1.10");
     }
 
     @Test(description = "GM#1.11", enabled = false)
@@ -164,6 +175,7 @@ public class GmailAutomationTest {
         step.markTopMessageLikeSpam();
         step.markMessageLike_Not_Spam();
         Assert.assertTrue(step.isMessageReturnToInbox());
+        logger.info("finished GM#1.11");
     }
 
     @Test(description = "GM#1.12", enabled = false)
@@ -173,6 +185,7 @@ public class GmailAutomationTest {
         step.openTabGeneral();
         step.createSignature();
         Assert.assertTrue(step.isNewMessagesHasSignature());
+        logger.info("finished GM#1.12");
     }
 
     @Test(description = "GM#1.13", enabled = false)
@@ -181,6 +194,7 @@ public class GmailAutomationTest {
         step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
         step.markMessageLikeStarred();
         Assert.assertTrue(step.isMessageInStarredFolder());
+        logger.info("finished GM#1.13");
     }
 
     @AfterMethod(description = "Stop browser")

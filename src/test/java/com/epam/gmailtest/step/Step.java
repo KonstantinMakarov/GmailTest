@@ -14,33 +14,23 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by Kanstantsin_Makarau on 10/9/2014.
- */
-
-//todo более подробные логи
 public class Step {
     public static final Logger logger = Logger.getLogger(Step.class);
     private WebDriver driver;
     private MainPage mainPage;
+    private final static long fileSize25Mb = 26214401;
 
     public void initBrowser() {
         driver = new FirefoxDriver();
-        driver.manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);
+        driver.manage().timeouts().pageLoadTimeout(180, TimeUnit.SECONDS);
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
         logger.info("Browser started");
     }
 
     public void stopBrowser() {
-        mainPage = null;                    //нужно ли это здесь?
+        mainPage = null;
         driver.quit();
         logger.info("Browser closed");
-    }
-
-    public void loginGmail(String login, String password) {
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.openPage();
-        loginPage.login(login, password);
     }
 
     private MainPage getMainPage() {
@@ -50,6 +40,12 @@ public class Step {
         else{
             return mainPage;
         }
+    }
+
+    public void loginGmail(String login, String password) {
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.openPage();
+        loginPage.login(login, password);
     }
 
     public void writeRandomMessageTo(String receiverLogin) {
@@ -79,13 +75,6 @@ public class Step {
         List<WebElement> spammerMessages = mainPage.getUnreadMessagesFromUser(email);
         return spammerMessages.size() == 2;
     }
-
-//    public void deleteSpamMessages() {
-//        getMainPage();
-//        mainPage.deleteSpamMessages();
-//    }
-
-    //----------------Task2--------------
 
     public void goToSettings(){
         getMainPage();
@@ -150,7 +139,7 @@ public class Step {
         mainPage.fillMessage(Util.getRandomString(20));
         String filePath = Util.getFile(fileSize);
         mainPage.attachFile(filePath);
-        if(fileSize < 26214401){
+        if(fileSize < fileSize25Mb){
             mainPage.waitForLoadingFile();
             mainPage.clickButtonSend();
         }
@@ -184,12 +173,6 @@ public class Step {
         return mainPage.isVisibleAlertAttachLimit();
     }
 
-    public void goToThemes() {
-        getMainPage();
-        mainPage.clickButtonSettings();
-        mainPage.chooseThemesInContextMenu();
-    }
-
     public void chooseTabThemes() {
         getMainPage();
         mainPage.clickTabThemes();
@@ -215,7 +198,6 @@ public class Step {
         mainPage.addSmiles();
         mainPage.clickButtonSend();
     }
-
 
     public boolean isLetterFromUserWithEmoticonAttach(String email) {
         logger.info("Check letter from user with emoticon attach");
@@ -243,7 +225,6 @@ public class Step {
         mainPage.clickButton_Not_Spam();
         logger.info("message was marked");
     }
-
 
     public boolean isMessageReturnToInbox() {
         logger.info("Check message return to INBOX");
@@ -348,11 +329,35 @@ public class Step {
     public void clickButtonSetColour() {
         logger.info("Try to click button SET COLOUR");
         mainPage.clickButtonSetColour();
-        logger.info("button SET COLOUR");
+        new WebDriverWait(driver, 5);
+        logger.info("button SET COLOUR was clicked");
     }
 
     public boolean isBackgroundColorsOfShortCutEquals(String parentShortcutName, String backgroundColor) {
         logger.info("Check equals of background colors of shortcut");
         return mainPage.isBackgroundColorsOfShortCutEquals(parentShortcutName, backgroundColor);
+    }
+
+    public void clickRemoveLabel() {
+        logger.info("Try to click REMOVE LABEL");
+        getMainPage();
+        mainPage.clickButtonRemoveLabel();
+        logger.info("button REMOVE LABEL was clicked");
+    }
+
+    public boolean areBothShortcutsPresentedInDialog(String parentShortcutName, String insertedShortcutName) {
+        logger.info("Check both shortcut are presented in dialog");
+        return mainPage.isParentShortcutPresentedInDialog(parentShortcutName) &&
+                mainPage.isInsertedShortcutPresentedInDialog(insertedShortcutName);
+    }
+
+    public void clickDeleteButton() {
+        logger.info("Try to click button DELETE");
+        mainPage.clickButtonDeleteInShortcutDialog();
+    }
+
+    public boolean areBothShortcutsDeleted(String parentShortcutName) {
+        logger.info("Check both shortcut are deleted");
+        return mainPage.areBothShortcutsDeleted(parentShortcutName);
     }
 }

@@ -7,9 +7,6 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by Kanstantsin_Makarau on 10/9/2014.
- */
 public class Util {
     static Logger logger = Logger.getLogger(Util.class);
     private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -49,7 +46,7 @@ public class Util {
     }
 
     public static void deleteFile(String filePath) {
-        File file = null;
+        File file;
         try{
             file = new File(filePath);
             if(file.delete()){
@@ -63,7 +60,7 @@ public class Util {
 
     public static String hexColorCode(String styleAttribute) {
         String backgroundColor = styleAttribute.split(";")[0];
-        StringBuilder hexColor = new StringBuilder("#");
+        StringBuilder hexColor = new StringBuilder("background-color: #");
         Pattern pattern = Pattern.compile("\\d+");
         Matcher matcher = pattern.matcher(backgroundColor);
         while(matcher.find()){
@@ -72,4 +69,5 @@ public class Util {
         }
         return hexColor.toString();
     }
+
 }

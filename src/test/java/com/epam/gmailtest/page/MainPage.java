@@ -14,10 +14,6 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
-
-/**
- * Created by Kanstantsin_Makarau on 10/9/2014.
- */
 public class MainPage {
     private WebDriver driver;
     public static final Logger logger = Logger.getLogger(MainPage.class);
@@ -143,12 +139,6 @@ public class MainPage {
     @FindBy(xpath = "//a[text()='Themes']")
     private WebElement themesInSettings;
 
-    @FindBy(xpath = "//div[@class='J-awr'] and text()='Display density'")
-    private WebElement downDropList;
-
-    @FindBy(xpath = "//div[@class='fZ']/a[text()='General']")
-    private WebElement generalFormSettingsVisible;
-
     @FindBy(xpath = "//span[text()='Beach']")
     private WebElement beachTheme;
 
@@ -212,7 +202,7 @@ public class MainPage {
     @FindBy(xpath = "//div[@class='J-N-Jz']/span/..")
     private WebElement buttonLabelColour;
 
-    @FindBy(xpath = "(//td[@class='JA-Kn-Jr-Kw-Jn']/div)[1]")
+    @FindBy(xpath = "(//td[@id='JA-Kn-Jr-Kw-Jn0']/div)[1]")
     private WebElement firstOfOfferedColours;
 
     @FindBy(xpath = "//label[contains(text(), 'Label ')]/../input")
@@ -220,6 +210,15 @@ public class MainPage {
 
     @FindBy(xpath = "//button[text()='Set colour']")
     private WebElement buttonSetColour;
+
+    @FindBy(xpath = "//div[text()='Remove label' and @class='J-N-Jz']")
+    private WebElement buttonRemoveLabel;
+
+    @FindBy(xpath = "//button[text()='Delete']")
+    private WebElement buttonDeleteInShortcutDialog;
+
+    @FindBy(xpath = "(//div[@class='n3'])[1]//a")
+    private List<WebElement> leftShortcuts;
 
     private final String labelImportant = "(//div[@class='pH'])[1]";
 
@@ -234,17 +233,6 @@ public class MainPage {
     public MainPage(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
-    }
-
-    public void deleteSpamMessages() {
-        //todo почистить за собой
-        logger.info("try to delete messages from our spammer..");
-        List<WebElement> readMessages = readMessage.findElements(By.xpath("//span[@email='epamlab.user1@gmail.com']"));
-        for(WebElement currentMessage : readMessages){
-            currentMessage.findElement(By.xpath("/../..//td[@class='oZ-x3 xY']")).click();      //Spam checkbox !НЕ РАБОТАЕТ!
-        }
-        buttonDelete.click();
-        logger.info("Spam messages from our spammer was deleted");
     }
 
     public void clickButtonCompose() {
@@ -397,10 +385,7 @@ public class MainPage {
             new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOf(buttonOkInConfirmDiscardChanges));
             buttonOkInConfirmDiscardChanges.click();
         }
-        catch(TimeoutException e){
-            logger.info("Confirm discard changes is invisible. Try to go on..");
-        }
-        catch(NoSuchElementException e){
+        catch(TimeoutException | NoSuchElementException e){
             logger.info("Confirm discard changes is invisible. Try to go on..");
         }
     }
@@ -503,14 +488,6 @@ public class MainPage {
         themesInSettings.click();
     }
 
-    public boolean isDownDropListVisible() {
-        return downDropList.isDisplayed();
-    }
-
-    public boolean isGeneralFormSettingsVisible() {
-        return generalFormSettingsVisible.isDisplayed();
-    }
-
     public void clickBeachTheme() {
         beachTheme.click();
     }
@@ -556,10 +533,7 @@ public class MainPage {
             new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(smilePinkLaughInMessage));
             new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(smileYellowLaughInMessage));
         }
-        catch(TimeoutException e){
-            logger.info("smile not found");
-        }
-        catch(NoSuchContextException e){
+        catch(TimeoutException | NoSuchContextException e){
             logger.info("smile not found");
         }
         return true;
@@ -619,12 +593,11 @@ public class MainPage {
     public void clickTriangleOfShortcut(String parentShortcutName) {
         String shortcutXPath = getShortcutXPath(parentShortcutName);
         Actions action = new Actions(driver);
-        action.moveToElement(driver.findElement(By.xpath(shortcutXPath))).build();
+        action.moveToElement(driver.findElement(By.xpath(shortcutXPath)));
 
-        StringBuilder stringBuilderPath = new StringBuilder(getShortcutXPath(parentShortcutName));
+        StringBuilder stringBuilderPath = new StringBuilder(shortcutXPath);
         stringBuilderPath.append("/../../..//div[@class='p6']");    //треугольник
-        WebElement triangleButton = driver.findElement(By.xpath(stringBuilderPath.toString()));
-        action.click(triangleButton).build().perform();
+        action.click(driver.findElement(By.xpath(stringBuilderPath.toString()))).build().perform();
     }
 
     public void clickButtonAddSublable() {
@@ -664,9 +637,8 @@ public class MainPage {
     }
 
     public String clickTheOneOfTheOfferedColours() {
-        String styleAttribute = firstOfOfferedColours.getAttribute("style");
         firstOfOfferedColours.click();
-        return Util.hexColorCode(styleAttribute);
+        return Util.hexColorCode(firstOfOfferedColours.getAttribute("style"));
     }
 
     public void chooseLabelAndItsSublabelsRadioButton() {
@@ -678,17 +650,23 @@ public class MainPage {
     }
 
     public boolean isBackgroundColorsOfShortCutEquals(String parentShortcutName, String expectedBackgroundColor) {
-        Actions action = new Actions(driver);
-        StringBuilder stringBuilderPath = new StringBuilder(getShortcutXPath(parentShortcutName));
-        action.moveToElement(driver.findElement(By.xpath(stringBuilderPath.toString()))).build();   //навести на шорткат
+        StringBuilder triangleColorPath = new StringBuilder(getShortcutXPath(parentShortcutName));
 
-        stringBuilderPath.append("/../../..//div[@class='p6']");    //треугольник с бэкграундом
-        action.click(driver.findElement(By.xpath(stringBuilderPath.toString()))).build().perform(); //навести на треугольник
-        WebElement triangleBackground = driver.findElement(By.xpath(stringBuilderPath.toString()));
-
-        String actualBackgroundColor = Util.hexColorCode(triangleBackground.getAttribute("style"));
-        logger.info("expected = "+ expectedBackgroundColor +"; actual = " + actualBackgroundColor);
-        return expectedBackgroundColor.equals(actualBackgroundColor);
+        triangleColorPath.append("/../../..//div[@class='p6' and @style='");
+        triangleColorPath.append(expectedBackgroundColor);
+        triangleColorPath.append("']");
+        try{
+            new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(triangleColorPath.toString())));
+        }
+        catch (TimeoutException e){
+            logger.info("Colors aren't same");
+            return false;
+        }
+        catch (NoSuchElementException e){
+            logger.info("Colors aren't same");
+            return false;
+        }
+        return true;
     }
 
     private String getShortcutXPath(String parentShortcutName) {
@@ -697,5 +675,43 @@ public class MainPage {
         stringBuilderPath.append(parentShortcutName);
         stringBuilderPath.append("')]");
         return stringBuilderPath.toString();
+    }
+
+    public void clickButtonRemoveLabel() {
+        buttonRemoveLabel.click();
+    }
+
+    public boolean isParentShortcutPresentedInDialog(String parentShortcutName) {
+        StringBuilder xpathBuilder = new StringBuilder("//span[@class='ajP' and text()='");
+        xpathBuilder.append(parentShortcutName);
+        xpathBuilder.append("']");
+        return driver.findElement(By.xpath(xpathBuilder.toString())).isDisplayed();
+    }
+
+    public boolean isInsertedShortcutPresentedInDialog(String insertedShortcutName) {
+        StringBuilder xpathBuilder = new StringBuilder("//span[@class='ajP' and text()='");
+        xpathBuilder.append(insertedShortcutName);
+        xpathBuilder.append("']");
+        return driver.findElement(By.xpath(xpathBuilder.toString())).isDisplayed();
+    }
+
+    public void clickButtonDeleteInShortcutDialog() {
+        buttonDeleteInShortcutDialog.click();
+    }
+
+    public boolean areBothShortcutsDeleted(String parentShortcutName) {
+        String shortcutXPath = getShortcutXPath(parentShortcutName);
+        try{
+            new WebDriverWait(driver, 120).until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(shortcutXPath)));
+            return true;
+        }
+        catch (NoSuchElementException e){
+            logger.info("Shortcuts are absent");
+            return true;
+        }
+        catch (TimeoutException e){
+            logger.info("Shortcuts weren't removed");
+            return false;
+        }
     }
 }
