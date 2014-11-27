@@ -2,6 +2,7 @@ package com.epam.gmailtest.step;
 
 import com.epam.gmailtest.page.LoginPage;
 import com.epam.gmailtest.page.MainPage;
+import com.epam.gmailtest.page.WriteMessagePage;
 import com.epam.gmailtest.util.Util;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
@@ -52,10 +53,11 @@ public class Step {
         logger.info("try to write message..");
         getMainPage();
         mainPage.clickButtonCompose();
-        mainPage.fillReceiver(receiverLogin);
-        mainPage.fillSubject(Util.getRandomString(5));
-        mainPage.fillMessage(Util.getRandomString(20));
-        mainPage.clickButtonSend();
+        WriteMessagePage writeMessagePage = new WriteMessagePage(driver);
+        writeMessagePage.fillReceiver(receiverLogin);
+        writeMessagePage.fillSubject(Util.getRandomString(5));
+        writeMessagePage.fillMessage(Util.getRandomString(20));
+        writeMessagePage.clickButtonSend();
         logger.info("message was written");
     }
 
@@ -89,6 +91,7 @@ public class Step {
 
     public void setForwardToUser3(String email) {
         getMainPage();
+
         mainPage.clickButtonAddAForwardingAddress();
         mainPage.addForwardLogin(email);
     }
@@ -134,14 +137,15 @@ public class Step {
         logger.info("try to write message..");
         getMainPage();
         mainPage.clickButtonCompose();
-        mainPage.fillReceiver(email);
-        mainPage.fillSubject(Util.getRandomString(5));
-        mainPage.fillMessage(Util.getRandomString(20));
+        WriteMessagePage writeMessagePage = new WriteMessagePage(driver);
+        writeMessagePage.fillReceiver(email);
+        writeMessagePage.fillSubject(Util.getRandomString(5));
+        writeMessagePage.fillMessage(Util.getRandomString(20));
         String filePath = Util.getFile(fileSize);
-        mainPage.attachFile(filePath);
+        writeMessagePage.attachFile(filePath);
         if(fileSize < fileSize25Mb){
-            mainPage.waitForLoadingFile();
-            mainPage.clickButtonSend();
+            writeMessagePage.waitForLoadingFile();
+            writeMessagePage.clickButtonSend();
         }
         Util.deleteFile(filePath);
     }
@@ -191,12 +195,13 @@ public class Step {
         logger.info("try to write message..");
         getMainPage();
         mainPage.clickButtonCompose();
-        mainPage.fillReceiver(email);
-        mainPage.fillSubject(Util.getRandomString(5));
-        mainPage.fillMessage(Util.getRandomString(20));
-        mainPage.clickButtonEmoticon();
-        mainPage.addSmiles();
-        mainPage.clickButtonSend();
+        WriteMessagePage writeMessagePage = new WriteMessagePage(driver);
+        writeMessagePage.fillReceiver(email);
+        writeMessagePage.fillSubject(Util.getRandomString(5));
+        writeMessagePage.fillMessage(Util.getRandomString(20));
+        writeMessagePage.clickButtonEmoticon();
+        writeMessagePage.addSmiles();
+        writeMessagePage.clickButtonSend();
     }
 
     public boolean isLetterFromUserWithEmoticonAttach(String email) {

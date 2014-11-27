@@ -36,7 +36,6 @@ public class GmailAutomationTest {
         logger.info("start GM#1.1");
         step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
         step.writeRandomMessageTo(USER2_LOGIN);                 //todo InboxFolderPage instead MainPage
-                                                                //todo WriteMessagePage
         step.stopBrowser();
         step.initBrowser();
 
@@ -51,7 +50,7 @@ public class GmailAutomationTest {
         step.initBrowser();
 
         step.loginGmail(USER2_LOGIN, USER2_PASSWORD);
-        boolean twoMessagesInSpamFolder = step.doWeHaveTwoMessagesInSpamFolderFrom(USER1_LOGIN);    //todo SpamFolderPage
+        boolean twoMessagesInSpamFolder = step.doWeHaveTwoMessagesInSpamFolderFrom(USER1_LOGIN);
         Assert.assertEquals(twoMessagesInSpamFolder, true);
        logger.info("finished GM#1.1");
    }
