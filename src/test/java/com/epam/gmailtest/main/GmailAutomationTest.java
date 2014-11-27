@@ -9,6 +9,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class GmailAutomationTest {
+
     private Step step;
     private final String USER1_LOGIN = "epamlab.user1@gmail.com";
     private final String USER1_PASSWORD = "labuser1";
@@ -34,7 +35,8 @@ public class GmailAutomationTest {
    public void user1CanMarkMessageAsSpamAndThenMessagesFromUser2WillGoToFolderSpam() {
         logger.info("start GM#1.1");
         step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
-        step.writeRandomMessageTo(USER2_LOGIN);
+        step.writeRandomMessageTo(USER2_LOGIN);                 //todo InboxFolderPage instead MainPage
+                                                                //todo WriteMessagePage
         step.stopBrowser();
         step.initBrowser();
 
@@ -49,7 +51,7 @@ public class GmailAutomationTest {
         step.initBrowser();
 
         step.loginGmail(USER2_LOGIN, USER2_PASSWORD);
-        boolean twoMessagesInSpamFolder = step.doWeHaveTwoMessagesInSpamFolderFrom(USER1_LOGIN);
+        boolean twoMessagesInSpamFolder = step.doWeHaveTwoMessagesInSpamFolderFrom(USER1_LOGIN);    //todo SpamFolderPage
         Assert.assertEquals(twoMessagesInSpamFolder, true);
        logger.info("finished GM#1.1");
    }
@@ -58,14 +60,15 @@ public class GmailAutomationTest {
     public void forwardBetweenUsers(){
         logger.info("start GM#1.2");
         step.loginGmail(USER2_LOGIN, USER2_PASSWORD);
-        step.goToSettings();
-        step.chooseTabForwardingAndPOP_IMAP();
+        step.goToSettings();                                //todo GeneralSettingsPage
+        step.chooseTabForwardingAndPOP_IMAP();              //todo ForwardingAndPOP_IMAPSettingsPage
         step.setForwardToUser3(USER3_LOGIN);
         step.stopBrowser();
 
         step.initBrowser();
         step.loginGmail(USER3_LOGIN, USER3_PASSWORD);
-        step.confirmForwardFromUser2(gmailAutoReply);
+        step.confirmForwardFromUser2(gmailAutoReply);       //todo MessagePage
+                                                            //todo ConfirmationSuccessPage
         step.stopBrowser();
 
         step.initBrowser();
@@ -74,7 +77,7 @@ public class GmailAutomationTest {
         step.chooseTabForwardingAndPOP_IMAP();
         step.setRadiobuttonForwardACopyOfIncomingMailTo();
         step.goToSettings();
-        step.chooseTabFilters();
+        step.chooseTabFilters();                            //todo FiltersSettingsPage
         step.createANewFilterWithSettings(USER1_LOGIN);
         step.stopBrowser();
 
@@ -86,7 +89,7 @@ public class GmailAutomationTest {
 
         step.initBrowser();
         step.loginGmail(USER2_LOGIN, USER2_PASSWORD);
-        Assert.assertTrue(step.isLetterFromUser1WithAttach_InTrash_AndMarkAsImportant(USER1_LOGIN));
+        Assert.assertTrue(step.isLetterFromUser1WithAttach_InTrash_AndMarkAsImportant(USER1_LOGIN));   //todo TrashFolderPage
         Assert.assertTrue(step.isLetterFromUser1WithoutAttach_InInbox_NotMarkAsImportant(USER1_LOGIN));
         step.stopBrowser();
 
@@ -123,13 +126,13 @@ public class GmailAutomationTest {
         logger.info("start GM#1.6");
         step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
         step.goToSettings();
-        step.chooseTabThemes();
+        step.chooseTabThemes();                              //todo ThemesSettingsPage
         step.clickBeachTheme();
         Assert.assertTrue(step.isBackGroundChanged());
         logger.info("finished GM#1.6");
     }
 
-    @Test(description = "GM#1.8", enabled = false)      //увести мышку из браузера
+    @Test(description = "GM#1.8", enabled = false)
     public void createShortcut(){
         logger.info("start GM#1.8");
         step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
@@ -156,7 +159,7 @@ public class GmailAutomationTest {
         logger.info("finished GM#1.9");
     }
 
-    @Test(description = "GM#1.10")
+    @Test(description = "GM#1.10", enabled = false)
     public void deleteShortcut (){
         logger.info("start GM#1.10");
         step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
@@ -193,7 +196,7 @@ public class GmailAutomationTest {
         logger.info("start GM#1.13");
         step.loginGmail(USER1_LOGIN, USER1_PASSWORD);
         step.markMessageLikeStarred();
-        Assert.assertTrue(step.isMessageInStarredFolder());
+        Assert.assertTrue(step.isMessageInStarredFolder());     //todo StarredFolderPage
         logger.info("finished GM#1.13");
     }
 

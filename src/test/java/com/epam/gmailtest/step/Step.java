@@ -102,7 +102,7 @@ public class Step {
         String parentWindow = driver.getWindowHandle();
         for(String currentWindow : driver.getWindowHandles()){
             driver.switchTo().window(currentWindow);
-        }
+        }                                                                          //todo убрать wait - это быдлокод
         new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(
                             driver.findElement(By.xpath("//td[text()='Confirmation Success!']"))));
         logger.info("Confirmation Success");
