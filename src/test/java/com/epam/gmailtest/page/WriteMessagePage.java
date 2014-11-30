@@ -50,6 +50,9 @@ public class WriteMessagePage {
     @FindBy(xpath = "//div[@class='T-I J-J5-Ji T-I-atl L3' and text()='Insert']")
     private WebElement buttonInsert;
 
+    @FindBy(xpath = "//div[@class='gmail_signature']")
+    private static WebElement signature;
+
     public WriteMessagePage(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
@@ -120,5 +123,9 @@ public class WriteMessagePage {
         } catch (AWTException e) {
             logger.info("JavaRobot fail");
         }
+    }
+
+    public static boolean isSignatureVisible() {
+        return signature.isDisplayed();
     }
 }

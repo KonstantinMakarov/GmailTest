@@ -12,9 +12,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.List;
 
 public class MainPage {
+
     private WebDriver driver;
     public static final Logger logger = Logger.getLogger(MainPage.class);
-
 
     @FindBy(xpath = "//div[@class='T-I J-J5-Ji T-I-KE L3']")
     private WebElement buttonCompose;
@@ -49,83 +49,14 @@ public class MainPage {
     @FindBy(xpath = "//div[@class='J-N aMS']")
     private WebElement buttonSettingsInner;
 
-    @FindBy(xpath = "//a[text()='Forwarding and POP/IMAP']")
-    private WebElement buttonForwardingAndPOP_IMAP;
-
-    @FindBy(xpath = "//input[@value='Add a forwarding address']")
-    private WebElement buttonAddAForwardingAddress;
-
-    @FindBy(xpath = "//div[@class='Kj-JD-Jz' and contains(text(), 'a new forwarding email')]//input[@id]")
-    private WebElement inputForwardLogin;
-
-    @FindBy(xpath = "//button[@class='J-at1-auR']")
-    private WebElement buttonNextInAddForwardingAddress;
-
-    @FindBy(xpath = "//input[@value='Proceed']")
-    private WebElement buttonProceedInAddForwardingAddress;
-
-    @FindBy(xpath = "//button[@class='J-at1-auR']")
-    private WebElement buttonOKInAddForwardingAddress;
-
     @FindBy(xpath = "(//a[contains(text(), 'isolated')])[1]")
     private WebElement linkToAcceptForward;
-
-    @FindBy(xpath = "//span[text()='Forward a copy of incoming mail to ']/../..//input")
-    private WebElement radiobuttonForwardACopyOfIncomingMailTo;
-
-    @FindBy(xpath = "//div[@class='nH Tv1JD']//button[@guidedhelpid='save_changes_button']")
-    private WebElement buttonSaveChangesForwarding;
-
-    @FindBy(xpath = "//div[@class='nH f2 hCyPr']//button[@guidedhelpid='save_changes_button']")
-    private WebElement buttonSaveChangesGeneral;
-
-    @FindBy(xpath = "//div[contains(text(), 'You are forwarding')]")
-    private WebElement noticeYouAreForwardingYourEMail;
-
-    @FindBy(xpath = "//a[text()='Filters']")
-    private WebElement buttonFilters;
-
-    @FindBy(xpath = "//span[@class='sA' and text()='Create a new filter']")
-    private WebElement buttonCreateANewFilter;
-
-    @FindBy(xpath = "//input[@class='ZH nr aQa']")
-    private WebElement inputFilterFrom;
-
-    @FindBy(xpath = "//label[text()='Has attachment']/../input")
-    private WebElement checkBoxFilterHasAttachment;
-
-    @FindBy(xpath = "//div[@class='acM']")
-    private WebElement buttonCreateFilterWithThisSearch;
-
-    @FindBy(xpath = "//label[text()='Delete it']/../input")
-    private WebElement checkBoxFilterDeleteIt;
-
-    @FindBy(xpath = "//label[text()='Always mark it as important']/../input")
-    private WebElement checkBoxFilterAlwaysMarkItAsImportant;
-
-    @FindBy(xpath = "//div[@class='T-I J-J5-Ji Zx acL T-I-atl L3']")
-    private WebElement buttonCreateFilter;
-
-    @FindBy(xpath = "//button[@class='J-at1-auR J-at1-atl' and @name='ok']")
-    private WebElement buttonOkInConfirmDiscardChanges;
 
     @FindBy(xpath = "//a[@class='J-Ke n0' and contains(@href, '#inbox')]")
     private WebElement buttonInbox;
 
     @FindBy(xpath = "//span[@class='Kj-JD-K7-K0']")
     private WebElement errorAttachAlert;
-
-    @FindBy(xpath = "//div[@class='J-N-Jz' and text()='Themes'] ")
-    private WebElement themesInContextMenu;
-
-    @FindBy(xpath = "//a[text()='Themes']")
-    private WebElement themesInSettings;
-
-    @FindBy(xpath = "//span[text()='Beach']")
-    private WebElement beachTheme;
-
-    @FindBy(xpath = "//img[@class='ao0' and contains(@src, 'themes/beach2/bg_thu2')]")
-    private WebElement beachBackGround;
 
     @FindBy(xpath = "(//img[@goomoji='338'])[1]")
     private WebElement smileYellowLaughInMessage;
@@ -138,15 +69,6 @@ public class MainPage {
 
     @FindBy(xpath = "//div[@class='ya']")
     private WebElement deleteAllSpamMessageNow;
-
-    @FindBy(xpath = "(//input[@name='sx_sg'])[2]")
-    private WebElement radioButtonSignature;
-
-    @FindBy(xpath = "(//div[@class='Am Al editable Xp0HJf-LW-avf'])[1]")
-    private WebElement signatureTextAria;
-
-    @FindBy(xpath = "//div[@class='gmail_signature']")
-    private WebElement signature;
 
     @FindBy(xpath = "(//div[@role='main']//span[@class='aXw T-KT'])[1]")
     private WebElement star;
@@ -195,10 +117,6 @@ public class MainPage {
     private final String label_Not_Important = "(//div[@class='pH-A7'])[1]";
 
     private final String labelHasAttach = "(//img[@alt='Attachment'])[1]";
-
-
-
-
 
     public MainPage(WebDriver driver) {
         this.driver = driver;
@@ -260,77 +178,8 @@ public class MainPage {
         logger.info("SETTINGS in context menu was clicked");
     }
 
-    public void chooseForwardingAndPOP_IMAP() {
-        new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOf(buttonForwardingAndPOP_IMAP));
-        buttonForwardingAndPOP_IMAP.click();
-    }
-
-    public void clickButtonAddAForwardingAddress() {
-        buttonAddAForwardingAddress.click();
-    }
-
-    public void addForwardLogin(String email) {
-        inputForwardLogin.sendKeys(email);
-        buttonNextInAddForwardingAddress.click();
-        driver.switchTo().frame(driver.findElement(By.xpath("//iframe[@class='ds']")));
-        buttonProceedInAddForwardingAddress.click();
-        driver.switchTo().defaultContent();
-        buttonOKInAddForwardingAddress.click();
-    }
-
     public void clickForwardAcceptLink() {
         linkToAcceptForward.click();
-    }
-
-    public void clickRadiobuttonForwardACopyOfIncomingMailTo() {
-        radiobuttonForwardACopyOfIncomingMailTo.click();
-    }
-
-    public void clickButtonSaveChangesForwarding() {
-        buttonSaveChangesForwarding.click();
-        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(noticeYouAreForwardingYourEMail));
-    }
-
-    public void clickButtonFilters() {
-        buttonFilters.click();
-    }
-
-    public void clickButtonCreateANewFilter() {
-        buttonCreateANewFilter.click();
-    }
-
-    public void fillFiledFrom(String fromUser) {
-        inputFilterFrom.sendKeys(fromUser);
-    }
-
-    public void tickHasAttachment() {
-        checkBoxFilterHasAttachment.click();
-    }
-
-    public void clickButtonCreateFilterWithThisSearch() {
-        buttonCreateFilterWithThisSearch.click();
-    }
-
-    public void tickDeleteIt() {
-        checkBoxFilterDeleteIt.click();
-    }
-
-    public void tickAlwaysMarkItAsImportant() {
-        checkBoxFilterAlwaysMarkItAsImportant.click();
-    }
-
-    public void clickButtonCreateFilter() {
-        buttonCreateFilter.click();
-    }
-
-    public void clickButtonOkInConfirmDiscardChanges() {
-        try{
-            new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOf(buttonOkInConfirmDiscardChanges));
-            buttonOkInConfirmDiscardChanges.click();
-        }
-        catch(TimeoutException | NoSuchElementException e){
-            logger.info("Confirm discard changes is invisible. Try to go on..");
-        }
     }
 
     public void goToBin() {
@@ -398,33 +247,6 @@ public class MainPage {
         return true;
     }
 
-    public void chooseThemesInContextMenu() {
-        themesInContextMenu.click();
-    }
-
-    public void clickTabThemes() {
-        themesInSettings.click();
-    }
-
-    public void clickBeachTheme() {
-        beachTheme.click();
-    }
-
-    public boolean isBackGroundChanged() {
-        try{
-            new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(beachBackGround));
-        }
-        catch (TimeoutException e){
-            logger.info("beachBackGround is not found");
-            return false;
-        }
-        catch (NoSuchContextException e){
-            logger.info("beachBackGround is not found");
-            return false;
-        }
-        return true;
-    }
-
     public boolean isMessageHasSmileAttachment(WebElement message) {
         logger.info("Check message has smile attachment");
         if(!isMessageHasAttachment(message)) return false;
@@ -448,30 +270,6 @@ public class MainPage {
         logger.info("Try to click button 'Not Spam'..");
         button_Not_Spam.click();
         logger.info("button was clicked");
-    }
-
-    public void tickRadioButtonSignature() {
-        logger.info("Try to tick radiobutton signature..");
-        radioButtonSignature.click();
-        logger.info("Radiobutton signature was ticked");
-    }
-
-    public void createSignature(String signature) {
-        logger.info("Try to set signature..");
-        signatureTextAria.sendKeys(signature);
-        logger.info("Signature was set");
-    }
-
-    public boolean isSignatureVisible() {
-        logger.info("Check visibility of signature");
-        return signature.isDisplayed();
-    }
-
-    public void clickButtonSaveChangesGeneral() {
-        logger.info("Try to click button SAVE CHANGES..");
-        buttonSaveChangesGeneral.click();
-        new WebDriverWait(driver, 1);
-        logger.info("Button SAVE CHANGES was clicked");
     }
 
     public void clickOnStar() {

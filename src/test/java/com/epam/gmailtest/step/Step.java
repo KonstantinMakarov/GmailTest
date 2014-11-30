@@ -1,8 +1,10 @@
 package com.epam.gmailtest.step;
 
-import com.epam.gmailtest.page.LoginPage;
-import com.epam.gmailtest.page.MainPage;
-import com.epam.gmailtest.page.WriteMessagePage;
+import com.epam.gmailtest.page.*;
+import com.epam.gmailtest.page.settings.FilterSettingsPage;
+import com.epam.gmailtest.page.settings.ForwardingAndPOP_IMAP;
+import com.epam.gmailtest.page.settings.GeneralSettingsPage;
+import com.epam.gmailtest.page.settings.ThemesSettingsPage;
 import com.epam.gmailtest.util.Util;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
@@ -19,6 +21,8 @@ public class Step {
     public static final Logger logger = Logger.getLogger(Step.class);
     private WebDriver driver;
     private MainPage mainPage;
+    private ForwardingAndPOP_IMAP forwardingAndPOP_IMAP;
+    private ThemesSettingsPage themesSettingsPage;
     private final static long fileSize25Mb = 26214401;
 
     public void initBrowser() {
@@ -40,6 +44,24 @@ public class Step {
         }
         else{
             return mainPage;
+        }
+    }
+
+    private ForwardingAndPOP_IMAP getForwardingAndPOP_IMAPPage() {
+        if(null == forwardingAndPOP_IMAP){
+            return forwardingAndPOP_IMAP = new ForwardingAndPOP_IMAP(driver);
+        }
+        else{
+            return forwardingAndPOP_IMAP;
+        }
+    }
+
+    private ThemesSettingsPage getThemesSettingsPage() {
+        if(null == themesSettingsPage){
+            return themesSettingsPage = new ThemesSettingsPage(driver);
+        }
+        else{
+            return themesSettingsPage;
         }
     }
 
@@ -85,15 +107,14 @@ public class Step {
     }
 
     public void chooseTabForwardingAndPOP_IMAP() {
-        getMainPage();
-        mainPage.chooseForwardingAndPOP_IMAP();
+        GeneralSettingsPage generalSettingsPage = new GeneralSettingsPage(driver);
+        generalSettingsPage.chooseForwardingAndPOP_IMAP();
     }
 
     public void setForwardToUser3(String email) {
-        getMainPage();
-
-        mainPage.clickButtonAddAForwardingAddress();
-        mainPage.addForwardLogin(email);
+        getForwardingAndPOP_IMAPPage();
+        forwardingAndPOP_IMAP.clickButtonAddAForwardingAddress();
+        forwardingAndPOP_IMAP.addForwardLogin(email);
     }
 
     public void confirmForwardFromUser2(String email) {
@@ -102,7 +123,7 @@ public class Step {
         messages.get(0).click();
         mainPage.clickForwardAcceptLink();
 
-        String parentWindow = driver.getWindowHandle();
+        String parentWindow = driver.getWindowHandle();                     //куда это закинуть?
         for(String currentWindow : driver.getWindowHandles()){
             driver.switchTo().window(currentWindow);
         }                                                                          //todo убрать wait - это быдлокод
@@ -114,23 +135,25 @@ public class Step {
     }
 
     public void setRadiobuttonForwardACopyOfIncomingMailTo() {
-        mainPage.clickRadiobuttonForwardACopyOfIncomingMailTo();
-        mainPage.clickButtonSaveChangesForwarding();
+        getForwardingAndPOP_IMAPPage();
+        forwardingAndPOP_IMAP.clickRadiobuttonForwardACopyOfIncomingMailTo();
+        forwardingAndPOP_IMAP.clickButtonSaveChangesForwarding();
     }
 
     public void chooseTabFilters() {
-        mainPage.clickButtonFilters();
+        new GeneralSettingsPage(driver).clickButtonFilters();
     }
 
     public void createANewFilterWithSettings(String fromUser) {
-        mainPage.clickButtonCreateANewFilter();
-        mainPage.fillFiledFrom(fromUser);
-        mainPage.tickHasAttachment();
-        mainPage.clickButtonCreateFilterWithThisSearch();
-        mainPage.clickButtonOkInConfirmDiscardChanges();
-        mainPage.tickDeleteIt();
-        mainPage.tickAlwaysMarkItAsImportant();
-        mainPage.clickButtonCreateFilter();
+        FilterSettingsPage filterSettingsPage = new FilterSettingsPage(driver);
+        filterSettingsPage.clickButtonCreateANewFilter();
+        filterSettingsPage.fillFiledFrom(fromUser);
+        filterSettingsPage.tickHasAttachment();
+        filterSettingsPage.clickButtonCreateFilterWithThisSearch();
+        filterSettingsPage.clickButtonOkInConfirmDiscardChanges();
+        filterSettingsPage.tickDeleteIt();
+        filterSettingsPage.tickAlwaysMarkItAsImportant();
+        filterSettingsPage.clickButtonCreateFilter();
     }
 
     public void writeRandomMessageWithFileAttachTo(String email, long fileSize) {
@@ -178,17 +201,16 @@ public class Step {
     }
 
     public void chooseTabThemes() {
-        getMainPage();
-        mainPage.clickTabThemes();
+        new GeneralSettingsPage(driver).clickTabThemes();
     }
 
     public void clickBeachTheme() {
-        getMainPage();
-        mainPage.clickBeachTheme();
+        getThemesSettingsPage();
+        themesSettingsPage.clickBeachTheme();
     }
 
     public boolean isBackGroundChanged() {
-        return mainPage.isBackGroundChanged();
+        return themesSettingsPage.isBackGroundChanged();
     }
 
     public void writeRandomMessageWithEmoticonAttachTo(String email) {
@@ -248,16 +270,17 @@ public class Step {
 
     public void createSignature() {
         logger.info("Try to create signature");
-        getMainPage();
-        mainPage.tickRadioButtonSignature();
-        mainPage.createSignature(Util.getRandomString(15));
-        mainPage.clickButtonSaveChangesGeneral();
+        GeneralSettingsPage generalSettingsPage = new GeneralSettingsPage(driver);
+        generalSettingsPage.tickRadioButtonSignature();
+        generalSettingsPage.createSignature(Util.getRandomString(15));
+        generalSettingsPage.clickButtonSaveChangesGeneral();
         logger.info("Signature was created");
     }
 
     public boolean isNewMessagesHasSignature() {
+        logger.info("Check signature's visibility");
         mainPage.clickButtonCompose();
-        return mainPage.isSignatureVisible();
+        return WriteMessagePage.isSignatureVisible();
     }
 
     public void markMessageLikeStarred() {
