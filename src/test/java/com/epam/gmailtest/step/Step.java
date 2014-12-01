@@ -1,17 +1,18 @@
 package com.epam.gmailtest.step;
 
-import com.epam.gmailtest.page.*;
+import com.epam.gmailtest.page.ConfirmationSuccessPage;
+import com.epam.gmailtest.page.LoginPage;
+import com.epam.gmailtest.page.MainPage;
+import com.epam.gmailtest.page.WriteMessagePage;
 import com.epam.gmailtest.page.settings.FilterSettingsPage;
 import com.epam.gmailtest.page.settings.ForwardingAndPOP_IMAP;
 import com.epam.gmailtest.page.settings.GeneralSettingsPage;
 import com.epam.gmailtest.page.settings.ThemesSettingsPage;
 import com.epam.gmailtest.util.Util;
 import org.apache.log4j.Logger;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
@@ -122,16 +123,7 @@ public class Step {
         List<WebElement> messages = mainPage.getUnreadMessagesFromUser(email);
         messages.get(0).click();
         mainPage.clickForwardAcceptLink();
-
-        String parentWindow = driver.getWindowHandle();                     //куда это закинуть?
-        for(String currentWindow : driver.getWindowHandles()){
-            driver.switchTo().window(currentWindow);
-        }                                                                          //todo убрать wait - это быдлокод
-        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(
-                            driver.findElement(By.xpath("//td[text()='Confirmation Success!']"))));
-        logger.info("Confirmation Success");
-        driver.close();
-        driver.switchTo().window(parentWindow);
+        new ConfirmationSuccessPage(driver).insurance();
     }
 
     public void setRadiobuttonForwardACopyOfIncomingMailTo() {

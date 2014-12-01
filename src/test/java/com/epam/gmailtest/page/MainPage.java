@@ -148,7 +148,7 @@ public class MainPage {
         logger.info("try to GoToSpamFolder..");
         inputSearch.sendKeys("in:spam");
         buttonSearch.click();
-        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(deleteAllSpamMessageNow));  //todo ждет элемента на другой странице
+        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(deleteAllSpamMessageNow));
         logger.info("in SpamFolder");
     }
 
